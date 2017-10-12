@@ -92,3 +92,17 @@
 .App-intro {
   font-size: large;
 }
+
+.dates-table {
+  width: 100%;
+}
+
+.search-form label {
+  width: 50%;
+  float: left;
+}
+
+.DayPickerInput {
+  width: 50%;
+  float: left;
+}

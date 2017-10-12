@@ -1,10 +1,51 @@
 import React, { Component } from 'react';
 import logo from '../images/appIcon.png';
-import background from '../images/las_lajas.jpg';
 import './App.css';
+import moment from 'moment';
+import DayPickerInput from 'react-day-picker/DayPickerInput';
+import 'react-day-picker/lib/style.css';
+
+const DAY_FORMAT = 'DD/MM/YYYY';
 
 class App extends Component {
+  state = {
+    selectedStartDay: undefined,
+    selectedEndDay: undefined,
+    isDisabled: false
+  }
+
+  handleStartDayChange = (selectedStartDay, modifiers) => {
+    this.setState({
+      selectedStartDay,
+      isDisabled: modifiers.disabled,
+    });
+  };
+  handleEndDayChange = (selectedEndDay, modifiers) => {
+    this.setState({
+      selectedEndDay,
+      isDisabled: modifiers.disabled,
+    });
+  };
+
   render() {
+    const { selectedStartDay, selectedEndDay, isDisabled } = this.state;
+    const formattedStartDay = selectedStartDay
+      ? moment(selectedStartDay).format(DAY_FORMAT)
+      : '';
+    const formattedEndDay = selectedEndDay
+      ? moment(selectedEndDay).format(DAY_FORMAT)
+      : '';
+    const dayPickerProps = {
+      todayButton: 'Go to Today',
+      disabledDays: {
+        daysOfWeek: [0, 6],
+      },
+      enableOutsideDays: true,
+      modifiers: {
+        monday: { daysOfWeek: [1] },
+      },
+    };
+
     return (
       <div className="App">
         <header className="App-header">
@@ -23,8 +64,35 @@ class App extends Component {
         </header>
         <div className="App-body">
           <div className="search-form">
-            <label>Fecha inicio </label><input></input><br/>
-            <label>Fecha fin </label><input></input><br/>
+            <table className="dates-table">
+              <tr>
+                <tx>
+                  <label>Fecha inicio </label>
+                </tx>
+                <tx>
+                  <label>Fecha fin </label>
+                </tx>
+              </tr>
+              <tr>
+                <tx>
+                  <DayPickerInput
+                    value={formattedStartDay}
+                    onDayChange={this.handleStartDayChange}
+                    format={DAY_FORMAT}
+                    placeholder={`E.g. ${moment().locale('en').format(DAY_FORMAT)}`}
+                    dayPickerProps={dayPickerProps}/>
+                  </tx>
+                <tx>
+                  <DayPickerInput
+                    value={formattedEndDay}
+                    onDayChange={this.handleEndDayChange}
+                    format={DAY_FORMAT}
+                    placeholder={`E.g. ${moment().locale('en').format(DAY_FORMAT)}`}
+                    dayPickerProps={dayPickerProps}/>
+                </tx>
+              </tr>
+            </table>
+            <br/>
             <label>Lugar </label><input></input><br/>
             <label># personas </label><input></input><br/>
             <label>Tipo </label><input></input><br/>
@@ -32,7 +100,7 @@ class App extends Component {
           </div>
         </div>
         <div className="App-footer">
-          <a>Powered by: Reduxers</a>
+          <a>Powered by: Redux haters from hell</a>
         </div>
       </div>
     );
