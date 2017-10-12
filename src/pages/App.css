@@ -1,25 +1,92 @@
 .App {
   text-align: center;
-  /*background-image: url('../images/las_lajas.jpg');
-  background-attachment: fixed;*/
+  height: 100%;
+  width: 100%;
+  background-image: url('../images/las_lajas.jpg');
+  background-attachment: fixed;
+  background-size: cover;
+  position: absolute;
 }
 
-.App-background {
-  width: 100%;
-  height: 100%;
-}
 .App-logo {
+  background-color: rgba(20, 20, 20, 0.2);
+  border: 2px solid #ffffff;
+  border-radius: 10px;
+  padding: 5px;
   float: left;
-  height: 80px;
+  height: 75px;
 }
 
 .App-header {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.65), transparent 70%,transparent 100%);
   height: 100px;
   padding: 20px;
 }
 
+.App-header-btns {
+  float: right;
+  margin-right: 40px;
+}
+
+.App-header-btns button {
+  font-size: 1.1em;
+  margin: 10px;
+  width: 90px;
+  height: 30px;
+  background-color: rgba(20, 20, 20, 0.2);
+  color: white;
+  border: 2px solid #ffffff;
+  border-radius: 5px;
+}
+.App-header-btns button:hover {
+  text-shadow: 0px 0px 1px white;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
 .App-title {
-  font-size: 1.5em;
+  float: left;
+  margin-left: 15px;
+  height: 75px;
+  text-shadow: 1px 1px 1px #ffffff;
+  position: relative;
+}
+
+.App-title a1 {
+  font-size: 2.4em;
+}
+
+#divTitle {
+  top: 50%;
+  position: absolute;
+}
+.App-footer {
+  height: 25px;
+  position: fixed;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  bottom: 0;
+  width: 100%;
+  color: white;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent 90%,transparent 100%);
+}
+
+.App-body {
+  width: 80%;
+  margin: auto;
+}
+
+.search-form {
+  width: 30%;
+  margin: auto;
+  padding: 15px;
+  border: 2px solid #646464;
+  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.search-form label {
+  float: left;
 }
 
 .App-intro {
