@@ -1,12 +1,22 @@
 import React, { Component } from 'react';
 import logo from '../images/appIcon.png';
 import './App.css';
+import 'react-dates/initialize';
+import { DateRangePicker, SingleDatePicker, DayPickerRangeController } from 'react-dates';
+import 'react-dates/lib/css/_datepicker.css';
 
 
 class App extends Component {
 
-  render() {
+  constructor (props){
+    super(props)
+    this.state = {
+      startDate: '',
+      endDate: '',
+    }
+  }
 
+  render() {
     return (
       <div className="App">
         <header className="App-header">
@@ -25,7 +35,15 @@ class App extends Component {
         </header>
         <div className="App-body">
           <div className="search-form">
-          /* DATE PICKER HERE */
+
+            <DateRangePicker
+              startDate={this.state.startDate} // momentPropTypes.momentObj or null,
+              endDate={this.state.endDate} // momentPropTypes.momentObj or null,
+              onDatesChange={({ startDate, endDate }) => this.setState({ startDate, endDate })} // PropTypes.func.isRequired,
+              focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
+              onFocusChange={focusedInput => this.setState({ focusedInput })} // PropTypes.func.isRequired,
+            />
+
             <label>Lugar </label><input></input><br/>
             <label># personas </label><input></input><br/>
             <label>Tipo </label><input></input><br/>
