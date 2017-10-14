@@ -106,3 +106,7 @@
   width: 50%;
   float: left;
 }
+
+.DayPickerInput input {
+  width: 70%;
+}
