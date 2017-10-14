@@ -4,10 +4,22 @@ import './App.css';
 import moment from 'moment';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
+import apiHotelz from '../rest/apiHotelz.js'
 
 const DAY_FORMAT = 'DD/MM/YYYY';
 
 class App extends Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      startDate: '',
+      endDate: '',
+      place: '',
+      ammountPpl: '',
+      roomType: ''
+    }
+    this.getRoomsPy = this.getRoomsPy.bind(this)
+  }
   state = {
     selectedStartDay: undefined,
     selectedEndDay: undefined,
@@ -26,6 +38,17 @@ class App extends Component {
       isDisabled: modifiers.disabled,
     });
   };
+
+  getRoomsPy(props){
+    var data = apiHotelz.getRoomsPython(
+      this.state.startDate,
+      this.state.endDate,
+      this.state.place,
+      this.state.ammountPpl,
+      this.state.roomType
+    )
+    console.log("@@@ ",data);
+  }
 
   render() {
     const { selectedStartDay, selectedEndDay, isDisabled } = this.state;
@@ -96,7 +119,7 @@ class App extends Component {
             <label>Lugar </label><input></input><br/>
             <label># personas </label><input></input><br/>
             <label>Tipo </label><input></input><br/>
-            <button>Buscar</button>
+            <button onClick={this.getRoomsPy}>Buscar</button>
           </div>
         </div>
         <div className="App-footer">
