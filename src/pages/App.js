@@ -7,13 +7,32 @@ import 'react-dates/lib/css/_datepicker.css';
 
 
 class App extends Component {
-
-  constructor (props){
+  constructor(props){
     super(props)
     this.state = {
       startDate: '',
       endDate: '',
+      place: '',
+      ammountPpl: '',
+      roomType: ''
     }
+    this.getRoomsPy = this.getRoomsPy.bind(this)
+  }
+  state = {
+    selectedStartDay: undefined,
+    selectedEndDay: undefined,
+    isDisabled: false
+  }
+
+  getRoomsPy(props){
+    var data = apiHotelz.getRoomsPython(
+      this.state.startDate,
+      this.state.endDate,
+      this.state.place,
+      this.state.ammountPpl,
+      this.state.roomType
+    )
+    console.log("@@@ ",data);
   }
 
   render() {
@@ -47,7 +66,7 @@ class App extends Component {
             <label>Lugar </label><input></input><br/>
             <label># personas </label><input></input><br/>
             <label>Tipo </label><input></input><br/>
-            <button>Buscar</button>
+            <button onClick={this.getRoomsPy}>Buscar</button>
           </div>
         </div>
         <div className="App-footer">
