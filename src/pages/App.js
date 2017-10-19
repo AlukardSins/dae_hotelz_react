@@ -4,7 +4,9 @@ import './App.css';
 import 'react-dates/initialize';
 import { DateRangePicker, SingleDatePicker, DayPickerRangeController } from 'react-dates';
 import 'react-dates/lib/css/_datepicker.css';
+import ApiHotelzFunctions from '../rest/apiHotelz'
 
+const apiHotelz = new ApiHotelzFunctions()
 
 class App extends Component {
   constructor(props){
@@ -25,14 +27,26 @@ class App extends Component {
   }
 
   getRoomsPy(props){
-    var data = apiHotelz.getRoomsPython(
+    var promisePy = apiHotelz.getRoomsPython(
       this.state.startDate,
       this.state.endDate,
       this.state.place,
       this.state.ammountPpl,
       this.state.roomType
     )
-    console.log("@@@ ",data);
+    promisePy.then(function(resolve) {
+      console.log("@@@ ",resolve);
+    })
+    .catch(function(error){
+      console.log("@@@ ",error);
+    })
+    var data2 = apiHotelz.getRoomsGo(
+      this.state.startDate,
+      this.state.endDate,
+      this.state.place,
+      this.state.ammountPpl,
+      this.state.roomType
+    )
   }
 
   render() {
@@ -62,7 +76,7 @@ class App extends Component {
               focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
               onFocusChange={focusedInput => this.setState({ focusedInput })} // PropTypes.func.isRequired,
             />
-
+            <br/>
             <label>Lugar </label><input></input><br/>
             <label># personas </label><input></input><br/>
             <label>Tipo </label><input></input><br/>
