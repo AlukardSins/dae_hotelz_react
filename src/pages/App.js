@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import logo from '../images/appIcon.png';
 import './App.css';
-import moment from 'moment';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
-import 'react-day-picker/lib/style.css';
-import apiHotelz from '../rest/apiHotelz.js'
+import 'react-dates/initialize';
+import { DateRangePicker, SingleDatePicker, DayPickerRangeController } from 'react-dates';
+import 'react-dates/lib/css/_datepicker.css';
+import ApiHotelzFunctions from '../rest/apiHotelz'
 
-const DAY_FORMAT = 'DD/MM/YYYY';
+const apiHotelz = new ApiHotelzFunctions()
 
 class App extends Component {
   constructor(props){
@@ -26,49 +26,30 @@ class App extends Component {
     isDisabled: false
   }
 
-  handleStartDayChange = (selectedStartDay, modifiers) => {
-    this.setState({
-      selectedStartDay,
-      isDisabled: modifiers.disabled,
-    });
-  };
-  handleEndDayChange = (selectedEndDay, modifiers) => {
-    this.setState({
-      selectedEndDay,
-      isDisabled: modifiers.disabled,
-    });
-  };
-
   getRoomsPy(props){
-    var data = apiHotelz.getRoomsPython(
+    var promisePy = apiHotelz.getRoomsPython(
       this.state.startDate,
       this.state.endDate,
       this.state.place,
       this.state.ammountPpl,
       this.state.roomType
     )
-    console.log("@@@ ",data);
+    promisePy.then(function(resolve) {
+      console.log("@@@ ",resolve);
+    })
+    .catch(function(error){
+      console.log("@@@ ",error);
+    })
+    var data2 = apiHotelz.getRoomsGo(
+      this.state.startDate,
+      this.state.endDate,
+      this.state.place,
+      this.state.ammountPpl,
+      this.state.roomType
+    )
   }
 
   render() {
-    const { selectedStartDay, selectedEndDay, isDisabled } = this.state;
-    const formattedStartDay = selectedStartDay
-      ? moment(selectedStartDay).format(DAY_FORMAT)
-      : '';
-    const formattedEndDay = selectedEndDay
-      ? moment(selectedEndDay).format(DAY_FORMAT)
-      : '';
-    const dayPickerProps = {
-      todayButton: 'Go to Today',
-      disabledDays: {
-        daysOfWeek: [0, 6],
-      },
-      enableOutsideDays: true,
-      modifiers: {
-        monday: { daysOfWeek: [1] },
-      },
-    };
-
     return (
       <div className="App">
         <header className="App-header">
@@ -87,34 +68,14 @@ class App extends Component {
         </header>
         <div className="App-body">
           <div className="search-form">
-            <table className="dates-table">
-              <tr>
-                <tx>
-                  <label>Fecha inicio </label>
-                </tx>
-                <tx>
-                  <label>Fecha fin </label>
-                </tx>
-              </tr>
-              <tr>
-                <tx>
-                  <DayPickerInput
-                    value={formattedStartDay}
-                    onDayChange={this.handleStartDayChange}
-                    format={DAY_FORMAT}
-                    placeholder={`E.g. ${moment().locale('en').format(DAY_FORMAT)}`}
-                    dayPickerProps={dayPickerProps}/>
-                  </tx>
-                <tx>
-                  <DayPickerInput
-                    value={formattedEndDay}
-                    onDayChange={this.handleEndDayChange}
-                    format={DAY_FORMAT}
-                    placeholder={`E.g. ${moment().locale('en').format(DAY_FORMAT)}`}
-                    dayPickerProps={dayPickerProps}/>
-                </tx>
-              </tr>
-            </table>
+
+            <DateRangePicker
+              startDate={this.state.startDate} // momentPropTypes.momentObj or null,
+              endDate={this.state.endDate} // momentPropTypes.momentObj or null,
+              onDatesChange={({ startDate, endDate }) => this.setState({ startDate, endDate })} // PropTypes.func.isRequired,
+              focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
+              onFocusChange={focusedInput => this.setState({ focusedInput })} // PropTypes.func.isRequired,
+            />
             <br/>
             <label>Lugar </label><input></input><br/>
             <label># personas </label><input></input><br/>
