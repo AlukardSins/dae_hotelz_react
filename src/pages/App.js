@@ -16,9 +16,12 @@ class App extends Component {
       endDate: '',
       place: '',
       ammountPpl: '',
-      roomType: ''
+      roomType: '',
+      roomsUnprocessedData: [''],
+      roomsData: []
     }
     this.getRoomsPy = this.getRoomsPy.bind(this)
+    this.processRoomsData = this.processRoomsData.bind(this)
   }
   state = {
     selectedStartDay: undefined,
@@ -34,8 +37,14 @@ class App extends Component {
       this.state.ammountPpl,
       this.state.roomType
     )
+    var self = this
     promisePy.then(function(resolve) {
       console.log("@@@ ",resolve);
+      if(resolve.data) {
+        self.setState({roomsData: []})
+        self.setState({roomsUnprocessedData: resolve.data})
+        self.processRoomsData()
+      }
     })
     .catch(function(error){
       console.log("@@@ ",error);
@@ -47,6 +56,29 @@ class App extends Component {
       this.state.ammountPpl,
       this.state.roomType
     )
+  }
+
+  processRoomsData(props){
+    if (this.state.roomsUnprocessedData) {
+      this.state.roomsUnprocessedData.forEach(hotel => {
+        hotel.rooms.forEach(room => {
+          var roomItem = []
+          roomItem.hotel_name = hotel.hotel_name
+          roomItem.capacity = room.capacity
+          roomItem.beds = room.beds
+          roomItem.check_in = hotel.check_in
+          roomItem.check_out = hotel.check_out
+          roomItem.room_type = room.room_type
+          roomItem.price = room.price
+          roomItem.currency = room.currency
+          roomItem.description = room.description
+          roomItem.hotel_thumbnail = hotel.hotel_thumbnail
+          roomItem.room_thumbnail = room.room_thumbnail
+          this.state.roomsData.push(roomItem)
+        });
+      });
+      console.log(this.state.roomsData);
+    }
   }
 
   render() {
