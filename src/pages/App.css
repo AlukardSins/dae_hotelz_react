@@ -5,7 +5,8 @@
   background-image: url('../images/las_lajas.jpg');
   background-attachment: fixed;
   background-size: cover;
-  position: absolute;
+  position: fixed;
+  overflow: auto;
 }
 
 .App-logo {
