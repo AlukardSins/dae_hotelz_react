@@ -39,23 +39,16 @@ class App extends Component {
     )
     var self = this
     promisePy.then(function(resolve) {
-      console.log("@@@ ",resolve);
       if(resolve.data) {
-        self.setState({roomsData: []})
+        self.state.roomsData = []
         self.setState({roomsUnprocessedData: resolve.data})
         self.processRoomsData()
       }
     })
     .catch(function(error){
+      alert("An error has ocurried, see console for error log.")
       console.log("@@@ ",error);
     })
-    var data2 = apiHotelz.getRoomsGo(
-      this.state.startDate,
-      this.state.endDate,
-      this.state.place,
-      this.state.ammountPpl,
-      this.state.roomType
-    )
   }
 
   processRoomsData(props){
@@ -77,7 +70,43 @@ class App extends Component {
           this.state.roomsData.push(roomItem)
         });
       });
-      console.log(this.state.roomsData);
+    }
+    this.forceUpdate()
+  }
+
+  cardsScheme() {
+    var rooms = this.state.roomsData
+    if (rooms) {
+      console.log("Loading...");
+      console.log(rooms);
+      var listRooms = rooms.map(function(room) {
+        return (
+          <div className="Room-Card">
+            <div className="Room-Images">
+              <img src={room.hotel_thumbnail}/>
+              <br/>
+              <img src={room.room_thumbnail}/>
+            </div>
+            <label>{room.hotel_name}</label> <br/>
+            <label>{room.capacity} personas</label> <br/>
+            <label>{room.beds.double} camas dobles {room.beds.simple} camas sencillas</label> <br/>
+            <label>Check in: {room.check_in}</label> <br/>
+            <label>Check out: {room.check_out}</label> <br/>
+            <label>Descripción: {room.description}</label> <br/>
+            <label>Tipo de habitación: {room.room_type}</label> <br/>
+            <label>{room.price} {room.currency}</label> <br/>
+            <button>Reservar</button>
+          </div>
+        )
+      })
+      return (
+        <div>{listRooms}</div>
+      )
+    } else {
+      console.log("Error on loading cards");
+      return(
+        <div>Empty</div>
+      )
     }
   }
 
@@ -100,7 +129,6 @@ class App extends Component {
         </header>
         <div className="App-body">
           <div className="search-form">
-
             <DateRangePicker
               startDate={this.state.startDate} // momentPropTypes.momentObj or null,
               endDate={this.state.endDate} // momentPropTypes.momentObj or null,
@@ -114,6 +142,7 @@ class App extends Component {
             <label>Tipo </label><input></input><br/>
             <button onClick={this.getRoomsPy}>Buscar</button>
           </div>
+          {this.cardsScheme()}
         </div>
         <div className="App-footer">
           <a>Powered by: Redux haters from hell</a>

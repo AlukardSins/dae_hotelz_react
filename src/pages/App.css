@@ -108,3 +108,18 @@
 .DayPickerInput input {
   width: 70%;
 }
+
+.Room-Card {
+  width: 50%;
+  height: 200px;
+  margin: auto;
+}
+
+.Room-Images {
+  float: left;
+}
+
+.Room-Images img {
+  height: 90px;
+  width: 90px;
+}
