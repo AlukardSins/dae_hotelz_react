@@ -1,4 +1,4 @@
-{
+var SAMPLE_JSON_RESPONSE = {
   "data":[
     {
       "hotel_id":"1",
@@ -79,4 +79,5 @@
       ]
     }
   ]
-}
+};
+export default SAMPLE_JSON_RESPONSE;

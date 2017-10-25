@@ -8,17 +8,26 @@ import ApiHotelzFunctions from '../rest/apiHotelz'
 
 const apiHotelz = new ApiHotelzFunctions()
 
+const endpoints = {
+  pythonEndpoint    : "http://www.pythonendpoint.edu/api/",
+  goEndpoint        : "http://www.goendpoint.edu/api/",
+  nodeEndpoint      : "http://www.nodeendpoint.edu/api/",
+  scalaEndpoint     : "http://www.scalaendpoint.edu/api/",
+  testMLURL         : "https://api.mercadolibre.com/sites/MCO/"
+}
+
 class App extends Component {
   constructor(props){
     super(props)
     this.state = {
+      apiUrl: '',
       startDate: '',
       endDate: '',
       place: '',
       ammountPpl: '',
       roomType: ''
     }
-    this.getRoomsPy = this.getRoomsPy.bind(this)
+    this.getRooms = this.getRooms.bind(this)
   }
   state = {
     selectedStartDay: undefined,
@@ -26,8 +35,9 @@ class App extends Component {
     isDisabled: false
   }
 
-  getRoomsPy(props){
-    var promisePy = apiHotelz.getRoomsPython(
+  getRooms(props){
+    var promisePy = apiHotelz.getRooms(
+      endpoints.testMLURL,
       this.state.startDate,
       this.state.endDate,
       this.state.place,
@@ -40,13 +50,6 @@ class App extends Component {
     .catch(function(error){
       console.log("@@@ ",error);
     })
-    var data2 = apiHotelz.getRoomsGo(
-      this.state.startDate,
-      this.state.endDate,
-      this.state.place,
-      this.state.ammountPpl,
-      this.state.roomType
-    )
   }
 
   render() {
@@ -80,7 +83,7 @@ class App extends Component {
             <label>Lugar </label><input></input><br/>
             <label># personas </label><input></input><br/>
             <label>Tipo </label><input></input><br/>
-            <button onClick={this.getRoomsPy}>Buscar</button>
+            <button onClick={this.getRooms}>Buscar</button>
           </div>
         </div>
         <div className="App-footer">
