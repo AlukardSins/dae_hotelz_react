@@ -59,15 +59,49 @@
   position: absolute;
 }
 .App-footer {
-  height: 25px;
   position: fixed;
   justify-content: center;
-  display: flex;
-  align-items: center;
   bottom: 0;
   width: 100%;
   color: white;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent 90%,transparent 100%);
+}
+
+.footer-colors {
+  height: 15px;
+  width: 100%;
+  bottom: 0px;
+  border-collapse: collapse;
+}
+
+.footer-colors a {
+  width: 14%;
+  height: 100%;
+}
+
+#orange {
+  background-color: #f7931e;
+}
+#red {
+  background-color: #c1272d;
+}
+#pink {
+  background-color: #1bcc56;
+}
+#darkBlue {
+  background-color: #cccc1f;
+}
+#blue {
+  background-color: #3318d1;
+}
+#green {
+  background-color: #19acce;
+}
+#yellow {
+  background-color: #c916d3;
+}
+
+.footer-text {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent 98%);
 }
 
 .App-body {

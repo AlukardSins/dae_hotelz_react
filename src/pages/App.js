@@ -145,7 +145,22 @@ class App extends Component {
           {this.cardsScheme()}
         </div>
         <div className="App-footer">
-          <a>Powered by: Redux haters from hell</a>
+          <div className="footer-text">
+            <a>hotelz s.l. Todos los derechos reservados 2017 Medellín, Antioquia</a>
+          </div>
+          <table className="footer-colors">
+            <tbody>
+              <tr>
+                <th id="orange"/>
+                <th id="red"/>
+                <th id="pink"/>
+                <th id="darkBlue"/>
+                <th id="blue"/>
+                <th id="green"/>
+                <th id="yellow"/>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     );
