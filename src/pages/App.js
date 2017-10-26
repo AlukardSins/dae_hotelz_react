@@ -25,9 +25,12 @@ class App extends Component {
       endDate: '',
       place: '',
       ammountPpl: '',
-      roomType: ''
+      roomType: '',
+      roomsUnprocessedData: [''],
+      roomsData: []
     }
     this.getRooms = this.getRooms.bind(this)
+    this.processRoomsData = this.processRoomsData.bind(this)
   }
   state = {
     selectedStartDay: undefined,
@@ -44,12 +47,77 @@ class App extends Component {
       this.state.ammountPpl,
       this.state.roomType
     )
+    var self = this
     promisePy.then(function(resolve) {
-      console.log("@@@ ",resolve);
+      if(resolve.data) {
+        self.state.roomsData = []
+        self.setState({roomsUnprocessedData: resolve.data})
+        self.processRoomsData()
+      }
     })
     .catch(function(error){
+      alert("An error has ocurried, see console for error log.")
       console.log("@@@ ",error);
     })
+  }
+
+  processRoomsData(props){
+    if (this.state.roomsUnprocessedData) {
+      this.state.roomsUnprocessedData.forEach(hotel => {
+        hotel.rooms.forEach(room => {
+          var roomItem = []
+          roomItem.hotel_name = hotel.hotel_name
+          roomItem.capacity = room.capacity
+          roomItem.beds = room.beds
+          roomItem.check_in = hotel.check_in
+          roomItem.check_out = hotel.check_out
+          roomItem.room_type = room.room_type
+          roomItem.price = room.price
+          roomItem.currency = room.currency
+          roomItem.description = room.description
+          roomItem.hotel_thumbnail = hotel.hotel_thumbnail
+          roomItem.room_thumbnail = room.room_thumbnail
+          this.state.roomsData.push(roomItem)
+        });
+      });
+    }
+    this.forceUpdate()
+  }
+
+  cardsScheme() {
+    var rooms = this.state.roomsData
+    if (rooms) {
+      console.log("Loading...");
+      console.log(rooms);
+      var listRooms = rooms.map(function(room, key) {
+        return (
+          <div key={key} className="Room-Card">
+            <div className="Room-Images">
+              <img src={room.hotel_thumbnail}/>
+              <br/>
+              <img src={room.room_thumbnail}/>
+            </div>
+            <label>{room.hotel_name}</label> <br/>
+            <label>{room.capacity} personas</label> <br/>
+            <label>{room.beds.double} camas dobles {room.beds.simple} camas sencillas</label> <br/>
+            <label>Check in: {room.check_in}</label> <br/>
+            <label>Check out: {room.check_out}</label> <br/>
+            <label>Descripción: {room.description}</label> <br/>
+            <label>Tipo de habitación: {room.room_type}</label> <br/>
+            <label>{room.price} {room.currency}</label> <br/>
+            <button>Reservar</button>
+          </div>
+        )
+      })
+      return (
+        <div>{listRooms}</div>
+      )
+    } else {
+      console.log("Error on loading cards");
+      return(
+        <div>Empty</div>
+      )
+    }
   }
 
   render() {
@@ -71,7 +139,6 @@ class App extends Component {
         </header>
         <div className="App-body">
           <div className="search-form">
-
             <DateRangePicker
               startDate={this.state.startDate} // momentPropTypes.momentObj or null,
               endDate={this.state.endDate} // momentPropTypes.momentObj or null,
@@ -85,6 +152,7 @@ class App extends Component {
             <label>Tipo </label><input></input><br/>
             <button onClick={this.getRooms}>Buscar</button>
           </div>
+          {this.cardsScheme()}
         </div>
         <div className="App-footer">
           <a>Powered by: Redux haters from hell</a>

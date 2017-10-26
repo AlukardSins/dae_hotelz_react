@@ -5,7 +5,8 @@
   background-image: url('../images/las_lajas.jpg');
   background-attachment: fixed;
   background-size: cover;
-  position: absolute;
+  position: fixed;
+  overflow: auto;
 }
 
 .App-logo {
@@ -107,4 +108,21 @@
 
 .DayPickerInput input {
   width: 70%;
+}
+
+.Room-Card {
+  width: 50%;
+  height: 200px;
+  margin: auto;
+  background: white;
+  margin-top: 10px;
+}
+
+.Room-Images {
+  float: left;
+}
+
+.Room-Images img {
+  height: 90px;
+  width: 90px;
 }
