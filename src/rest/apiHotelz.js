@@ -3,7 +3,7 @@ import axios from 'axios'
 const pythonEndpoint = "www.pythonendpoint.edu/api/"
 const goEndpoint = "www.goendpoint.edu/api/"
 const nodeEndpoint = "www.nodeendpoint.edu/api/"
-const scalaEndpoint = "www.scalaendpoint.edu/api/"
+const scalaEndpoint = "z"
 
 const testMLURL = "https://api.mercadolibre.com/sites/MCO/"
 

@@ -104,6 +104,11 @@
   background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent 98%);
 }
 
+.footer-text img {
+  height: 30px;
+  margin-left: 10px;
+}
+
 .App-body {
   width: 80%;
   margin: auto;

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import logo from '../images/appIcon.png';
+import logoicon from '../images/appIcon.png';
+import logotext from '../images/hotelz_logo.png';
 import './App.css';
 import 'react-dates/initialize';
 import { DateRangePicker, SingleDatePicker, DayPickerRangeController } from 'react-dates';
@@ -114,7 +115,7 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
+          <img src={logoicon} className="App-logo" alt="logo" />
           <div className="App-title">
             <div id="divTitle">
               <a1>Hotelz</a1>
@@ -146,7 +147,7 @@ class App extends Component {
         </div>
         <div className="App-footer">
           <div className="footer-text">
-            <a>hotelz s.l. Todos los derechos reservados 2017 Medellín, Antioquia</a>
+            <a>hotelz s.l. Todos los derechos reservados 2017 Medellín, Antioquia</a><img src={logotext}/><a>.com</a>
           </div>
           <table className="footer-colors">
             <tbody>
