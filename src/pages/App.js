@@ -3,25 +3,35 @@ import logoicon from '../images/appIcon.png';
 import logotext from '../images/hotelz_logo.png';
 import './App.css';
 import 'react-dates/initialize';
-import { DateRangePicker, SingleDatePicker, DayPickerRangeController } from 'react-dates';
+import { DateRangePicker } from 'react-dates';
 import 'react-dates/lib/css/_datepicker.css';
 import ApiHotelzFunctions from '../rest/apiHotelz'
+import moment from 'moment'
 
 const apiHotelz = new ApiHotelzFunctions()
+
+const endpoints = {
+  pythonEndpoint : "https://hotelz-python-api.herokuapp.com/V1/",
+  goEndpoint     : "https://udeain.herokuapp.com/api/v1/",
+  nodeEndpoint   : "https://api-hotelz-node.herokuapp.com/v1/",
+  scalaEndpoint  : "https://dezameron-api-dae.herokuapp.com/v1/",
+  testMLURL      : "https://api.mercadolibre.com/sites/MCO/"
+}
 
 class App extends Component {
   constructor(props){
     super(props)
     this.state = {
+      apiUrl: '',
       startDate: '',
       endDate: '',
-      place: '',
-      ammountPpl: '',
-      roomType: '',
+      place: '05001',
+      amountPpl: '2',
+      roomType: 'L',
       roomsUnprocessedData: [''],
       roomsData: []
     }
-    this.getRoomsPy = this.getRoomsPy.bind(this)
+    this.getRooms = this.getRooms.bind(this)
     this.processRoomsData = this.processRoomsData.bind(this)
   }
   state = {
@@ -30,25 +40,34 @@ class App extends Component {
     isDisabled: false
   }
 
-  getRoomsPy(props){
-    var promisePy = apiHotelz.getRoomsPython(
-      this.state.startDate,
-      this.state.endDate,
-      this.state.place,
-      this.state.ammountPpl,
-      this.state.roomType
-    )
-    var self = this
-    promisePy.then(function(resolve) {
-      if(resolve.data) {
-        self.state.roomsData = []
-        self.setState({roomsUnprocessedData: resolve.data})
-        self.processRoomsData()
+  getRooms(props){
+    var requestData = {
+      endpoint: '',
+      startDate: moment(this.state.startDate).format("YYYY-MM-DD"),
+      endDate: moment(this.state.endDate).format("YYYY-MM-DD"),
+      place: this.state.place,
+      amountPpl: this.state.amountPpl,
+      roomType: this.state.roomType
+    }
+
+    requestData.endpoint = endpoints.goEndpoint
+    var promiseGo = apiHotelz.getRooms(requestData)
+    requestData.endpoint = endpoints.pythonEndpoint
+    var promisePython = apiHotelz.getRooms(requestData)
+    requestData.endpoint = endpoints.nodeEndpoint
+    var promiseNode = apiHotelz.getRooms(requestData)
+    requestData.endpoint = endpoints.scalaEndpoint
+    var promiseScala = apiHotelz.getRooms(requestData)
+
+    Promise.all([promisePython, promiseGo, promiseNode, promiseScala])
+    .then(values => {
+      console.log(values);
+      if (values) {
+
       }
     })
     .catch(function(error){
-      alert("An error has ocurried, see console for error log.")
-      console.log("@@@ ",error);
+      console.warn("Error loading rooms");
     })
   }
 
@@ -78,11 +97,9 @@ class App extends Component {
   cardsScheme() {
     var rooms = this.state.roomsData
     if (rooms) {
-      console.log("Loading...");
-      console.log(rooms);
-      var listRooms = rooms.map(function(room) {
+      var listRooms = rooms.map(function(room, key) {
         return (
-          <div className="Room-Card">
+          <div key={key} className="Room-Card">
             <div className="Room-Images">
               <img src={room.hotel_thumbnail}/>
               <br/>
@@ -134,6 +151,7 @@ class App extends Component {
               startDate={this.state.startDate} // momentPropTypes.momentObj or null,
               endDate={this.state.endDate} // momentPropTypes.momentObj or null,
               onDatesChange={({ startDate, endDate }) => this.setState({ startDate, endDate })} // PropTypes.func.isRequired,
+              displayFormat="YYYY-MM-DD"
               focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
               onFocusChange={focusedInput => this.setState({ focusedInput })} // PropTypes.func.isRequired,
             />
@@ -141,7 +159,7 @@ class App extends Component {
             <label>Lugar </label><input></input><br/>
             <label># personas </label><input></input><br/>
             <label>Tipo </label><input></input><br/>
-            <button onClick={this.getRoomsPy}>Buscar</button>
+            <button onClick={this.getRooms}>Buscar</button>
           </div>
           {this.cardsScheme()}
         </div>
