@@ -11,14 +11,13 @@ const endpoints = {
 
 class ApiHotelzFunctions {
 
-  getRooms(requestData) {
+  getRooms(endpoint, requestData) {
 
     return new Promise(function (resolve, reject) {
-      console.log("1230", requestData.endpoint);
       var axiosInstance = axios.create({
-        baseURL: requestData.endpoint
+        baseURL: endpoint
       })
-      var getRoomsEndpoint = (requestData.endpoint === endpoints.pythonEndpoint) ? "rooms/" : "rooms";
+      var getRoomsEndpoint = (endpoint === endpoints.pythonEndpoint) ? "rooms/" : "rooms";
       axiosInstance.get(getRoomsEndpoint, {
         params: {
           arrive_date: requestData.startDate,
@@ -33,7 +32,7 @@ class ApiHotelzFunctions {
           console.log('Looks like there was a problem. Status Code: ' + response.status);
           return;
         }
-        resolve(SAMPLE_JSON_RESPONSE) /* Change */
+        resolve(response) /* Change */
       })
       .catch(function (error) {
         reject(error)

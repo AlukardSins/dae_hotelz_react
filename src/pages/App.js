@@ -5,8 +5,10 @@ import './App.css';
 import 'react-dates/initialize';
 import { DateRangePicker } from 'react-dates';
 import 'react-dates/lib/css/_datepicker.css';
+import 'react-select/dist/react-select.css';
 import ApiHotelzFunctions from '../rest/apiHotelz'
 import moment from 'moment'
+import Select from 'react-select'
 
 const apiHotelz = new ApiHotelzFunctions()
 
@@ -18,6 +20,15 @@ const endpoints = {
   testMLURL      : "https://api.mercadolibre.com/sites/MCO/"
 }
 
+const cityOptions = [
+  { value: "05001", label: "Medellín" },
+  { value: "11001", label: "Bogotá" }
+];
+const typeOptions = [
+  { value: 'L', label: "Lujosa" },
+  { value: 'S', label: "Sencilla" }
+];
+
 class App extends Component {
   constructor(props){
     super(props)
@@ -25,14 +36,19 @@ class App extends Component {
       apiUrl: '',
       startDate: '',
       endDate: '',
-      place: '05001',
-      amountPpl: '2',
+      place: '',
+      amountPpl: '',
       roomType: 'L',
       roomsUnprocessedData: [''],
-      roomsData: []
+      roomsData: [],
+      fieldsErrorMessage : ''
     }
     this.getRooms = this.getRooms.bind(this)
     this.processRoomsData = this.processRoomsData.bind(this)
+    this.validData = this.validData.bind(this)
+    this.cityChange = this.cityChange.bind(this)
+    this.typeChange = this.typeChange.bind(this)
+    this.amountPplChange = this.amountPplChange.bind(this)
   }
   state = {
     selectedStartDay: undefined,
@@ -40,9 +56,36 @@ class App extends Component {
     isDisabled: false
   }
 
-  getRooms(props){
+  cityChange(val) {
+    this.setState({place: val.value})
+  }
+  typeChange(val) {
+    this.setState({roomType: val.value})
+  }
+  amountPplChange(val) {
+    this.setState({amountPpl: val.target.value})
+  }
+
+  validData(props){
+      this.setState({fieldsErrorMessage: ''})
+    if (
+      !this.state.startDate ||
+      !this.state.endDate
+    ) {
+      this.setState({fieldsErrorMessage: 'Por favor llene todos los campos'})
+      return false
+    } else if (isNaN(this.state.amountPpl)) {
+      this.setState({fieldsErrorMessage: 'Por favor ingrese un número de personas numérico'})
+      return false;
+    }
+    return true
+  }
+
+  getRooms(props) {
+    if(!this.validData()){
+      return;
+    }
     var requestData = {
-      endpoint: '',
       startDate: moment(this.state.startDate).format("YYYY-MM-DD"),
       endDate: moment(this.state.endDate).format("YYYY-MM-DD"),
       place: this.state.place,
@@ -50,20 +93,31 @@ class App extends Component {
       roomType: this.state.roomType
     }
 
-    requestData.endpoint = endpoints.goEndpoint
-    var promiseGo = apiHotelz.getRooms(requestData)
-    requestData.endpoint = endpoints.pythonEndpoint
-    var promisePython = apiHotelz.getRooms(requestData)
-    requestData.endpoint = endpoints.nodeEndpoint
-    var promiseNode = apiHotelz.getRooms(requestData)
-    requestData.endpoint = endpoints.scalaEndpoint
-    var promiseScala = apiHotelz.getRooms(requestData)
+    var promiseGo = apiHotelz.getRooms(endpoints.goEndpoint, requestData)
+    var promisePython = apiHotelz.getRooms(endpoints.pythonEndpoint, requestData)
+    var promiseNode = apiHotelz.getRooms(endpoints.nodeEndpoint, requestData)
+    var promiseScala = apiHotelz.getRooms(endpoints.scalaEndpoint, requestData)
 
+  //   var self = this
+  //   promisePython.then(function(resolve) {
+  //     if(resolve.data) {
+  //       self.state.roomsData = []
+  //       self.setState({roomsUnprocessedData: resolve.data})
+  //       self.processRoomsData()
+  //     }
+  //   })
+  //   .catch(function(error){
+  //     alert("An error has ocurried, see console for error log.")
+  //     console.log("@@@ ",error);
+  //   })
+    var self = this
     Promise.all([promisePython, promiseGo, promiseNode, promiseScala])
     .then(values => {
       console.log(values);
       if (values) {
-
+        self.state.roomsData = []
+        self.setState({roomsUnprocessedData: values})
+        self.processRoomsData()
       }
     })
     .catch(function(error){
@@ -76,17 +130,11 @@ class App extends Component {
       this.state.roomsUnprocessedData.forEach(hotel => {
         hotel.rooms.forEach(room => {
           var roomItem = []
+          roomItem = room
           roomItem.hotel_name = hotel.hotel_name
-          roomItem.capacity = room.capacity
-          roomItem.beds = room.beds
+          roomItem.hotel_thumbnail = hotel.hotel_thumbnail
           roomItem.check_in = hotel.check_in
           roomItem.check_out = hotel.check_out
-          roomItem.room_type = room.room_type
-          roomItem.price = room.price
-          roomItem.currency = room.currency
-          roomItem.description = room.description
-          roomItem.hotel_thumbnail = hotel.hotel_thumbnail
-          roomItem.room_thumbnail = room.room_thumbnail
           this.state.roomsData.push(roomItem)
         });
       });
@@ -156,10 +204,27 @@ class App extends Component {
               onFocusChange={focusedInput => this.setState({ focusedInput })} // PropTypes.func.isRequired,
             />
             <br/>
-            <label>Lugar </label><input></input><br/>
-            <label># personas </label><input></input><br/>
-            <label>Tipo </label><input></input><br/>
-            <button onClick={this.getRooms}>Buscar</button>
+            <label>Lugar </label>
+            <Select
+              name="city-name"
+              defaultValue="05001"
+              options={cityOptions}
+              value={this.state.place}
+              onChange={this.cityChange}>
+            </Select>
+            <br/>
+            <label># personas </label><input type="number" min="0" step="1" max="30" onChange={this.amountPplChange}></input><br/>
+            <label>Tipo </label>
+            <Select
+              name="room-type"
+              defaultValue="S"
+              options={typeOptions}
+              value={this.state.roomType}
+              onChange={this.typeChange}>
+            </Select>
+            <br/>
+            <button onClick={this.getRooms}>Buscar</button> <br/>
+            <label>{this.state.fieldsErrorMessage}</label>
           </div>
           {this.cardsScheme()}
         </div>
