@@ -122,21 +122,21 @@ class App extends Component {
         self.processRoomsData()
       }
     })
-    .catch(function(error){
-      console.warn("Error loading rooms");
-    })
+    // .catch(function(error){
+    //   console.warn("Error loading rooms");
+    // })
   }
 
   processRoomsData(props){
     if (this.state.roomsUnprocessedData) {
       this.state.roomsUnprocessedData.forEach(hotel => {
-        hotel.rooms.forEach(room => {
+        hotel.data.rooms.forEach(room => {
           var roomItem = []
           roomItem = room
-          roomItem.hotel_name = hotel.hotel_name
-          roomItem.hotel_thumbnail = hotel.hotel_thumbnail
-          roomItem.check_in = hotel.check_in
-          roomItem.check_out = hotel.check_out
+          roomItem.hotel_name = hotel.data.hotel_name
+          roomItem.hotel_thumbnail = hotel.data.hotel_thumbnail
+          roomItem.check_in = hotel.data.check_in
+          roomItem.check_out = hotel.data.check_out
           this.state.roomsData.push(roomItem)
         });
       });
