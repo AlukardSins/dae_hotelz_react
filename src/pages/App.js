@@ -37,11 +37,12 @@ class App extends Component {
       startDate: '',
       endDate: '',
       place: '',
-      amountPpl: '',
+      amountPpl: '0',
       roomType: 'L',
       roomsUnprocessedData: [''],
       roomsData: [],
-      fieldsErrorMessage : ''
+      fieldsErrorMessage : '',
+      clearable: false
     }
     this.getRooms = this.getRooms.bind(this)
     this.processRoomsData = this.processRoomsData.bind(this)
@@ -63,6 +64,7 @@ class App extends Component {
     this.setState({roomType: val.value})
   }
   amountPplChange(val) {
+    console.log(val.target.value);
     this.setState({amountPpl: val.target.value})
   }
 
@@ -195,35 +197,54 @@ class App extends Component {
         </header>
         <div className="App-body">
           <div className="search-form">
-            <DateRangePicker
-              startDate={this.state.startDate} // momentPropTypes.momentObj or null,
-              endDate={this.state.endDate} // momentPropTypes.momentObj or null,
-              onDatesChange={({ startDate, endDate }) => this.setState({ startDate, endDate })} // PropTypes.func.isRequired,
-              displayFormat="YYYY-MM-DD"
-              focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
-              onFocusChange={focusedInput => this.setState({ focusedInput })} // PropTypes.func.isRequired,
-            />
+            <div>
+            <label>Fecha</label>
+              <DateRangePicker
+                endDatePlaceholderText="Salida"
+                startDatePlaceholderText="Entrada"
+                startDate={this.state.startDate} // momentPropTypes.momentObj or null,
+                endDate={this.state.endDate} // momentPropTypes.momentObj or null,
+                onDatesChange={({ startDate, endDate }) => this.setState({ startDate, endDate })} // PropTypes.func.isRequired,
+                displayFormat="YYYY-MM-DD"
+                focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
+                onFocusChange={focusedInput => this.setState({ focusedInput })} // PropTypes.func.isRequired,
+              />
+            </div>
             <br/>
-            <label>Lugar </label>
-            <Select
-              name="city-name"
-              defaultValue="05001"
-              options={cityOptions}
-              value={this.state.place}
-              onChange={this.cityChange}>
-            </Select>
+            <div>
+              <label>Lugar </label>
+              <Select
+                className="select-react-custom"
+                name="city-name"
+                defaultValue="05001"
+                options={cityOptions}
+                placeholder = "Seleccione la ciudad"
+                value={this.state.place}
+                onChange={this.cityChange}>
+              </Select>
+            </div>
             <br/>
-            <label># personas </label><input type="number" min="0" step="1" max="30" onChange={this.amountPplChange}></input><br/>
-            <label>Tipo </label>
-            <Select
-              name="room-type"
-              defaultValue="S"
-              options={typeOptions}
-              value={this.state.roomType}
-              onChange={this.typeChange}>
-            </Select>
+            <div>
+              <label># personas </label>
+              <input className="amount-ppl-input" type="number" min="0" step="1" max="30" value={this.state.amountPpl} onChange={this.amountPplChange}></input>
+            </div>
             <br/>
-            <button onClick={this.getRooms}>Buscar</button> <br/>
+            <div>
+              <label>Tipo </label>
+              <Select
+                name="room-type"
+                className="select-react-custom"
+                defaultValue="S"
+                options={typeOptions}
+                clearable={this.state.clearable}
+                value={this.state.roomType}
+                onChange={this.typeChange}>
+              </Select>
+            </div>
+            <br/>
+            <button onClick={this.getRooms}>Buscar</button>
+
+            <br/>
             <label>{this.state.fieldsErrorMessage}</label>
           </div>
           {this.cardsScheme()}

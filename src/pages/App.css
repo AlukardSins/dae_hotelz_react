@@ -127,6 +127,18 @@
   float: left;
 }
 
+.select-react-custom {
+  width: 50%;
+  float: right;
+}
+
+.amount-ppl-input {
+  width: 20%;
+  height: 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+
 .App-intro {
   font-size: large;
 }
