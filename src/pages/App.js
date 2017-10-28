@@ -58,7 +58,8 @@ class App extends Component {
       clearable: false,
       modalRoom: [],
       userReservationData: {},
-      modalIsOpen: false
+      modalIsOpen: false,
+      reservationMessage: ''
     }
     this.getRooms = this.getRooms.bind(this)
     this.processRoomsData = this.processRoomsData.bind(this)
@@ -157,8 +158,19 @@ class App extends Component {
 
     }
     console.log(this.state.modalRoom);
-    var response = apiHotelz.reservateRoom(endpointRes, this.state.modalRoom)
-    console.log("Result: ",response);
+
+    var responseReservate = apiHotelz.reservateRoom(endpointRes, this.state.modalRoom)
+    var self = this
+    Promise.all([responseReservate])
+    .then(values => {
+      self.closeModal()
+      if (values) {
+        alert("La habitación fue reservada con el código: \n"+ values[0].data.reservation_id)
+      }
+    })
+    .catch(function(error){
+      alert("Ocurrió un error al reservar, intente nuevamente")
+    })
   }
 
   getRooms(props) {
@@ -208,14 +220,15 @@ class App extends Component {
   }
 
   showRoomModal(room){
-    this.state.modalIsOpen = true
+    this.setState({modalIsOpen : true})
     this.setState({modalRoom: room})
   }
 
   closeModal(props){
-    this.state.modalIsOpen = false
+    this.setState({modalIsOpen : false})
     this.setState({modalRoom: []})
   }
+
 
   cardsScheme() {
     var rooms = this.state.roomsData
@@ -351,7 +364,7 @@ class App extends Component {
           isOpen={this.state.modalIsOpen}
           onRequestClose={this.closeModal}
           style={customStyles}
-          contentLabel="Example Modal">
+          contentLabel="Modal reservation">
           <div className="Room-Card" id="Modal-Room">
             <div className="Modal-Images">
               <img src={this.state.modalRoom.hotel_thumbnail}/>
@@ -374,7 +387,6 @@ class App extends Component {
               <button onClick={this.reservateRoom}>Reservar</button>
             </div>
           </div>
-
         </Modal>
       </div>
     );

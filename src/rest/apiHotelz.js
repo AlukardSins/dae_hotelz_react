@@ -39,23 +39,47 @@ class ApiHotelzFunctions {
   }
 
   reservateRoom(endpoint, requestData) {
-    axios.post(endpoint+'/rooms/reserve', {
-      arrive_date: requestData.arrive_date,
-      leave_date: requestData.leave_date,
-      room_type: requestData.room_type,
-      capacity: requestData.capacity,
-      beds: requestData.beds,
-      hotel_id: requestData.hotel_id,
-      user: requestData.userData
+    return new Promise(function (resolve, reject) {
+      var axiosInstance = axios.create({
+        baseURL: endpoint
+      })
+      axiosInstance.post('rooms/reserve', {
+        arrive_date: requestData.arrive_date,
+        leave_date: requestData.leave_date,
+        room_type: requestData.room_type,
+        capacity: requestData.capacity,
+        beds: requestData.beds,
+        hotel_id: requestData.hotel_id,
+        user: requestData.userData
+      })
+      .then(function (response) {
+        if (response.status !== 200) {
+          console.log('Looks like there was a problem. Status Code: ' + response.status);
+          return;
+        }
+        resolve(response)
+      })
+      .catch(function (error) {
+        reject(error)
+      })
     })
-    .then(function (response) {
-      console.log(response);
-      return response
-    })
-    .catch(function (error) {
-      console.log(error);
-      return error
-    });
+    // axios.post(endpoint+'rooms/reserve', {
+    //   arrive_date: requestData.arrive_date,
+    //   leave_date: requestData.leave_date,
+    //   room_type: requestData.room_type,
+    //   capacity: requestData.capacity,
+    //   beds: requestData.beds,
+    //   hotel_id: requestData.hotel_id,
+    //   user: requestData.userData
+    // })
+    // .then(function (response) {
+    //   console.log(response);
+    //   return response
+    // })
+    // .catch(function (error) {
+    //   console.log(error);
+    //   return error
+    // });
   }
 }
 export default ApiHotelzFunctions;
