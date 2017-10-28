@@ -4,8 +4,7 @@ const endpoints = {
   pythonEndpoint : "https://hotelz-python-api.herokuapp.com/V1/",
   goEndpoint : "https://udeain.herokuapp.com/api/v1/",
   nodeEndpoint : "https://api-hotelz-node.herokuapp.com/v1/",
-  scalaEndpoint : "https://dezameron-api-dae.herokuapp.com/v1/",
-  testMLURL         : "https://api.mercadolibre.com/sites/MCO/"
+  scalaEndpoint : "https://dezameron-api-dae.herokuapp.com/v1/"
 }
 
 class ApiHotelzFunctions {
@@ -39,5 +38,24 @@ class ApiHotelzFunctions {
 
   }
 
+  reservateRoom(endpoint, requestData) {
+    axios.post(endpoint+'/rooms/reserve', {
+      arrive_date: requestData.arrive_date,
+      leave_date: requestData.leave_date,
+      room_type: requestData.room_type,
+      capacity: requestData.capacity,
+      beds: requestData.beds,
+      hotel_id: requestData.hotel_id,
+      user: requestData.userData
+    })
+    .then(function (response) {
+      console.log(response);
+      return response
+    })
+    .catch(function (error) {
+      console.log(error);
+      return error
+    });
+  }
 }
 export default ApiHotelzFunctions;

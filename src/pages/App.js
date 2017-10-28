@@ -18,8 +18,7 @@ const endpoints = {
   pythonEndpoint : "https://hotelz-python-api.herokuapp.com/V1/",
   goEndpoint     : "https://udeain.herokuapp.com/api/v1/",
   nodeEndpoint   : "https://api-hotelz-node.herokuapp.com/v1/",
-  scalaEndpoint  : "https://dezameron-api-dae.herokuapp.com/v1/",
-  testMLURL      : "https://api.mercadolibre.com/sites/MCO/"
+  scalaEndpoint  : "https://dezameron-api-dae.herokuapp.com/v1/"
 }
 
 const cityOptions = [
@@ -58,7 +57,7 @@ class App extends Component {
       fieldsErrorMessage : '',
       clearable: false,
       modalRoom: [],
-      userReservationData: [],
+      userReservationData: {},
       modalIsOpen: false
     }
     this.getRooms = this.getRooms.bind(this)
@@ -68,6 +67,7 @@ class App extends Component {
     this.typeChange = this.typeChange.bind(this)
     this.amountPplChange = this.amountPplChange.bind(this)
     this.closeModal = this.closeModal.bind(this)
+    this.reservateRoom = this.reservateRoom.bind(this)
     this.userDocTypeChange = this.userDocTypeChange.bind(this)
     this.userDocumentChange = this.userDocumentChange.bind(this)
     this.userEmailChange = this.userEmailChange.bind(this)
@@ -94,27 +94,27 @@ class App extends Component {
   }
 
   userDocTypeChange(val) {
-    console.log(this.status.userReservationData);
-    this.state.userReservationData.doc_type = val.target.value
-    this.forceUpdate()
+    var resData = this.state.userReservationData
+    resData.doc_type = val.target.value
+    this.setState({userReservationData: resData})
   }
 
   userDocumentChange(val) {
-    console.log(this.status.userReservationData);
-    this.state.userReservationData.doc_id = val.target.value
-    this.forceUpdate()
+    var resData = this.state.userReservationData
+    resData.doc_id = val.target.value
+    this.setState({userReservationData: resData})
   }
 
   userEmailChange(val) {
-    console.log(this.status.userReservationData);
-    this.state.userReservationData.email = val.target.value
-    this.forceUpdate()
+    var resData = this.state.userReservationData
+    resData.email = val.target.value
+    this.setState({userReservationData: resData})
   }
 
   userPhoneChange(val) {
-    console.log(this.status.userReservationData);
-    this.state.userReservationData.phone_number = val.target.value
-    this.forceUpdate()
+    var resData = this.state.userReservationData
+    resData.phone_number = val.target.value
+    this.setState({userReservationData: resData})
   }
 
   validData(props){
@@ -130,6 +130,35 @@ class App extends Component {
       return false;
     }
     return true
+  }
+
+  reservateRoom(props){
+    var reservateData = this.state.modalRoom
+    reservateData.userData = this.state.userReservationData
+    this.setState({modalRoom: reservateData})
+    var postData = this.state.modalRoom
+    postData.arrive_date = moment(this.state.startDate).format("YYYY-MM-DD")
+    postData.leave_date = moment(this.state.endDate).format("YYYY-MM-DD")
+    var endpointRes
+    switch (this.state.modalRoom.hotel_name) {
+      case "udeain medellin":
+        endpointRes = endpoints.goEndpoint
+        break;
+      case "Dann Cartón":
+        endpointRes = endpoints.nodeEndpoint
+        break;
+      case "Dezameron":
+        endpointRes = endpoints.scalaEndpoint
+        break;
+      case "Colombia Resort Spring":
+        endpointRes = endpoints.pythonEndpoint
+        break;
+      default:
+
+    }
+    console.log(this.state.modalRoom);
+    var response = apiHotelz.reservateRoom(endpointRes, this.state.modalRoom)
+    console.log("Result: ",response);
   }
 
   getRooms(props) {
@@ -166,6 +195,7 @@ class App extends Component {
         hotel.data.rooms.forEach(room => {
           var roomItem = []
           roomItem = room
+          roomItem.hotel_id = hotel.data.hotel_id
           roomItem.hotel_name = hotel.data.hotel_name
           roomItem.hotel_thumbnail = hotel.data.hotel_thumbnail
           roomItem.check_in = hotel.data.check_in
@@ -178,7 +208,6 @@ class App extends Component {
   }
 
   showRoomModal(room){
-    console.log(room);
     this.state.modalIsOpen = true
     this.setState({modalRoom: room})
   }
@@ -336,13 +365,14 @@ class App extends Component {
             <label className="room_type">{this.state.modalRoom.room_type=='L'?'si':'no'}</label>
             <label className="currency">{numeral(this.state.modalRoom.price).format('0,0')} {this.state.modalRoom.currency}</label>
             <label className="description">{this.state.modalRoom.description}</label>
-
-            <label className="user_doctype">Tipo de documento: </label><input onChange={this.userDocTypeChange}/>
-            <label className="user_document">Documento: </label><input onChange={this.userDocumentChange}/>
-            <label className="user_email">Email: </label><input onChange={this.userEmailChange}/>
-            <label className="user_phone">Teléfono: </label><input onChange={this.userPhoneChange}/>
-            <button onClick={this.closeModal}>Cancelar</button>
-            <button onClick={this.closeModal}>Reservar</button>
+            <div className="modal_user_data">
+              <label className="user_doctype">Tipo de documento: </label><input onChange={this.userDocTypeChange}/>
+              <label className="user_document">Documento: </label><input onChange={this.userDocumentChange}/>
+              <label className="user_email">Email: </label><input onChange={this.userEmailChange}/>
+              <label className="user_phone">Teléfono: </label><input onChange={this.userPhoneChange}/>
+              <button onClick={this.closeModal}>Cancelar</button>
+              <button onClick={this.reservateRoom}>Reservar</button>
+            </div>
           </div>
 
         </Modal>

@@ -264,10 +264,8 @@
   {
     display: none;
   }
-  .Room-Card .user_name:after
-  {
-    background-image: url('../images/icons/double.png');
-  }
+
+
 
 
 #Modal-Room {
