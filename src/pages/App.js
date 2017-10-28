@@ -341,7 +341,8 @@ class App extends Component {
             <label className="user_document">Documento: </label><input onChange={this.userDocumentChange}/>
             <label className="user_email">Email: </label><input onChange={this.userEmailChange}/>
             <label className="user_phone">Teléfono: </label><input onChange={this.userPhoneChange}/>
-            <button onClick={this.closeModal}>close</button>
+            <button onClick={this.closeModal}>Cancelar</button>
+            <button onClick={this.closeModal}>Reservar</button>
           </div>
 
         </Modal>
