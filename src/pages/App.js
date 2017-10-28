@@ -200,7 +200,6 @@ class App extends Component {
       }
     })
   }
-
   processRoomsData(props){
     if (this.state.roomsUnprocessedData) {
       this.state.roomsUnprocessedData.forEach(hotel => {
@@ -236,7 +235,7 @@ class App extends Component {
     if (rooms) {
       var listRooms = rooms.map(function(room, key) {
         return (
-          <div>
+          <div className="Room-Card-Wrapper">
             <div key={key} className="Room-Card">
               <div className="Room-Images">
                 <img src={room.hotel_thumbnail}/>
@@ -371,11 +370,13 @@ class App extends Component {
               <br/>
               <img src={this.state.modalRoom.room_thumbnail}/>
             </div>
-            <label className="hotel_name">{this.state.modalRoom.hotel_name}</label>
+            <label className="hotel_name" tooltip={this.state.modalRoom.hotel_name}>
+              {this.state.modalRoom.hotel_name}
+            </label>
             <label className="capacity">{this.state.modalRoom.capacity}</label>
             <label className="check_in">Check in: {this.state.modalRoom.check_in}</label>
             <label className="check_out">Check out: {this.state.modalRoom.check_out}</label>
-            <label className="room_type">{this.state.modalRoom.room_type=='L'?'si':'no'}</label>
+            <label className="room_type">{this.state.modalRoom.room_type=='L'?'Lujosa':'Sencilla'}</label>
             <label className="currency">{numeral(this.state.modalRoom.price).format('0,0')} {this.state.modalRoom.currency}</label>
             <label className="description">{this.state.modalRoom.description}</label>
             <div className="modal_user_data">
