@@ -50,7 +50,7 @@ class App extends Component {
       startDate: '',
       endDate: '',
       place: '',
-      amountPpl: '0',
+      amountPpl: '1',
       roomType: 'L',
       roomsUnprocessedData: [''],
       roomsData: [],
@@ -303,7 +303,7 @@ class App extends Component {
 
             <div className="input-field">
               <label># personas </label>
-              <input className="amount-ppl-input" type="number" min="0" step="1" max="30" value={this.state.amountPpl} onChange={this.amountPplChange}></input>
+              <input className="amount-ppl-input" type="number" min="1" step="1" max="30" value={this.state.amountPpl} onChange={this.amountPplChange}></input>
             </div>
 
             <div className="input-field">
@@ -366,12 +366,28 @@ class App extends Component {
             <label className="currency">{numeral(this.state.modalRoom.price).format('0,0')} {this.state.modalRoom.currency}</label>
             <label className="description">{this.state.modalRoom.description}</label>
             <div className="modal_user_data">
-              <label className="user_doctype">Tipo de documento: </label><input onChange={this.userDocTypeChange}/>
-              <label className="user_document">Documento: </label><input onChange={this.userDocumentChange}/>
-              <label className="user_email">Email: </label><input onChange={this.userEmailChange}/>
-              <label className="user_phone">Teléfono: </label><input onChange={this.userPhoneChange}/>
-              <button onClick={this.closeModal}>Cancelar</button>
-              <button onClick={this.reservateRoom}>Reservar</button>
+              <table className="reservationForm">
+                <tr>
+                  <td><label className="user_doctype">Tipo de documento: </label></td>
+                  <td><input onChange={this.userDocTypeChange}/></td>
+                </tr>
+                <tr>
+                  <td><label className="user_document">Documento: </label></td>
+                  <td><input onChange={this.userDocumentChange}/></td>
+                </tr>
+                <tr>
+                  <td><label className="user_email">Email: </label></td>
+                  <td><input onChange={this.userEmailChange}/></td>
+                </tr>
+                <tr>
+                  <td><label className="user_phone">Teléfono: </label></td>
+                  <td><input onChange={this.userPhoneChange}/></td>
+                </tr>
+              </table>
+              <div className="clear"></div>
+              <button className="btn" onClick={this.closeModal}>Cancelar</button>
+              &nbsp;
+              <button className="btn" onClick={this.reservateRoom}>Reservar</button>
             </div>
           </div>
 

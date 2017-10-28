@@ -1,3 +1,6 @@
+.clear {
+  clear: both;
+}
 .App {
   text-align: center;
   height: 100%;
@@ -20,8 +23,19 @@
 
 .App-header {
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.65), transparent 70%,transparent 100%);
-  height: 100px;
+  height: 120px;
   padding: 20px;
+}
+
+.reservationForm
+{
+  float: right;
+}
+
+.reservationForm input
+{
+  width: 100px;
+  border: 1px solid #ccc;
 }
 
 .App-header-btns {
