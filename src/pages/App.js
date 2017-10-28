@@ -64,7 +64,6 @@ class App extends Component {
     this.setState({roomType: val.value})
   }
   amountPplChange(val) {
-    console.log(val.target.value);
     this.setState({amountPpl: val.target.value})
   }
 
@@ -100,31 +99,15 @@ class App extends Component {
     var promiseNode = apiHotelz.getRooms(endpoints.nodeEndpoint, requestData)
     var promiseScala = apiHotelz.getRooms(endpoints.scalaEndpoint, requestData)
 
-  //   var self = this
-  //   promisePython.then(function(resolve) {
-  //     if(resolve.data) {
-  //       self.state.roomsData = []
-  //       self.setState({roomsUnprocessedData: resolve.data})
-  //       self.processRoomsData()
-  //     }
-  //   })
-  //   .catch(function(error){
-  //     alert("An error has ocurried, see console for error log.")
-  //     console.log("@@@ ",error);
-  //   })
     var self = this
     Promise.all([promisePython, promiseGo, promiseNode, promiseScala])
     .then(values => {
-      console.log(values);
       if (values) {
         self.state.roomsData = []
         self.setState({roomsUnprocessedData: values})
         self.processRoomsData()
       }
     })
-    // .catch(function(error){
-    //   console.warn("Error loading rooms");
-    // })
   }
 
   processRoomsData(props){
@@ -144,8 +127,13 @@ class App extends Component {
     this.forceUpdate()
   }
 
+  showRoomModal(room){
+    console.log("Room ",room);
+  }
+
   cardsScheme() {
     var rooms = this.state.roomsData
+    var self = this
     if (rooms) {
       var listRooms = rooms.map(function(room, key) {
         return (
@@ -163,7 +151,7 @@ class App extends Component {
             <label>Descripción: {room.description}</label> <br/>
             <label>Tipo de habitación: {room.room_type}</label> <br/>
             <label>{room.price} {room.currency}</label> <br/>
-            <button>Reservar</button>
+            <button onClick={self.showRoomModal.bind(self, room)}>Reservar</button>
           </div>
         )
       })
