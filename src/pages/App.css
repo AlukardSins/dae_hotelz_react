@@ -256,14 +256,20 @@
   {
     font-size: 24px;
   }
-    .Room-Card .currency:before
-    {
-      content: '$';
-    }
-    .Room-Card .currency:after
-    {
-      display: none;
-    }
+  .Room-Card .currency:before
+  {
+    content: '$';
+  }
+  .Room-Card .currency:after
+  {
+    display: none;
+  }
+  .Room-Card .user_name:after
+  {
+    background-image: url('../images/icons/double.png');
+  }
+
+
 #Modal-Room {
   width: 95%;
 }

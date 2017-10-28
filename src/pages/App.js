@@ -58,6 +58,7 @@ class App extends Component {
       fieldsErrorMessage : '',
       clearable: false,
       modalRoom: [],
+      userReservationData: [],
       modalIsOpen: false
     }
     this.getRooms = this.getRooms.bind(this)
@@ -67,6 +68,10 @@ class App extends Component {
     this.typeChange = this.typeChange.bind(this)
     this.amountPplChange = this.amountPplChange.bind(this)
     this.closeModal = this.closeModal.bind(this)
+    this.userDocTypeChange = this.userDocTypeChange.bind(this)
+    this.userDocumentChange = this.userDocumentChange.bind(this)
+    this.userEmailChange = this.userEmailChange.bind(this)
+    this.userPhoneChange = this.userPhoneChange.bind(this)
   }
 
   state = {
@@ -86,6 +91,30 @@ class App extends Component {
 
   amountPplChange(val) {
     this.setState({amountPpl: val.target.value})
+  }
+
+  userDocTypeChange(val) {
+    console.log(this.status.userReservationData);
+    this.state.userReservationData.doc_type = val.target.value
+    this.forceUpdate()
+  }
+
+  userDocumentChange(val) {
+    console.log(this.status.userReservationData);
+    this.state.userReservationData.doc_id = val.target.value
+    this.forceUpdate()
+  }
+
+  userEmailChange(val) {
+    console.log(this.status.userReservationData);
+    this.state.userReservationData.email = val.target.value
+    this.forceUpdate()
+  }
+
+  userPhoneChange(val) {
+    console.log(this.status.userReservationData);
+    this.state.userReservationData.phone_number = val.target.value
+    this.forceUpdate()
   }
 
   validData(props){
@@ -307,6 +336,11 @@ class App extends Component {
             <label className="room_type">{this.state.modalRoom.room_type=='L'?'si':'no'}</label>
             <label className="currency">{numeral(this.state.modalRoom.price).format('0,0')} {this.state.modalRoom.currency}</label>
             <label className="description">{this.state.modalRoom.description}</label>
+
+            <label className="user_doctype">Tipo de documento: </label><input onChange={this.userDocTypeChange}/>
+            <label className="user_document">Documento: </label><input onChange={this.userDocumentChange}/>
+            <label className="user_email">Email: </label><input onChange={this.userEmailChange}/>
+            <label className="user_phone">Teléfono: </label><input onChange={this.userPhoneChange}/>
             <button onClick={this.closeModal}>close</button>
           </div>
 

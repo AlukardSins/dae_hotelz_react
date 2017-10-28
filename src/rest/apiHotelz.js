@@ -1,5 +1,4 @@
 import axios from 'axios'
-import SAMPLE_JSON_RESPONSE from './sampleJsonResponse';
 
 const endpoints = {
   pythonEndpoint : "https://hotelz-python-api.herokuapp.com/V1/",
@@ -12,7 +11,6 @@ const endpoints = {
 class ApiHotelzFunctions {
 
   getRooms(endpoint, requestData) {
-
     return new Promise(function (resolve, reject) {
       var axiosInstance = axios.create({
         baseURL: endpoint
@@ -32,7 +30,7 @@ class ApiHotelzFunctions {
           console.log('Looks like there was a problem. Status Code: ' + response.status);
           return;
         }
-        resolve(response) /* Change */
+        resolve(response)
       })
       .catch(function (error) {
         reject(error)
@@ -40,5 +38,6 @@ class ApiHotelzFunctions {
     })
 
   }
+
 }
 export default ApiHotelzFunctions;
