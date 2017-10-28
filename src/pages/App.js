@@ -9,6 +9,8 @@ import 'react-select/dist/react-select.css';
 import ApiHotelzFunctions from '../rest/apiHotelz'
 import moment from 'moment'
 import Select from 'react-select'
+import numeral from 'numeral'
+import Modal from 'react-modal'
 
 const apiHotelz = new ApiHotelzFunctions()
 
@@ -25,9 +27,21 @@ const cityOptions = [
   { value: "11001", label: "Bogotá" }
 ];
 const typeOptions = [
-  { value: 'L', label: "Lujosa" },
-  { value: 'S', label: "Sencilla" }
+  { value: 'S', label: "Sencilla" },
+  { value: 'L', label: "Lujosa" }
 ];
+
+const customStyles = {
+  content : {
+    top         : '50%',
+    left        : '50%',
+    right       : 'auto',
+    bottom      : 'auto',
+    marginRight : '-50%',
+    width       : '50%',
+    transform   : 'translate(-50%, -50%)'
+  }
+};
 
 class App extends Component {
   constructor(props){
@@ -42,7 +56,9 @@ class App extends Component {
       roomsUnprocessedData: [''],
       roomsData: [],
       fieldsErrorMessage : '',
-      clearable: false
+      clearable: false,
+      modalRoom: [],
+      modalIsOpen: false
     }
     this.getRooms = this.getRooms.bind(this)
     this.processRoomsData = this.processRoomsData.bind(this)
@@ -50,7 +66,9 @@ class App extends Component {
     this.cityChange = this.cityChange.bind(this)
     this.typeChange = this.typeChange.bind(this)
     this.amountPplChange = this.amountPplChange.bind(this)
+    this.closeModal = this.closeModal.bind(this)
   }
+
   state = {
     selectedStartDay: undefined,
     selectedEndDay: undefined,
@@ -58,11 +76,14 @@ class App extends Component {
   }
 
   cityChange(val) {
-    this.setState({place: val.value})
+    if (val)
+      this.setState({place: val.value})
   }
+
   typeChange(val) {
     this.setState({roomType: val.value})
   }
+
   amountPplChange(val) {
     this.setState({amountPpl: val.target.value})
   }
@@ -128,7 +149,14 @@ class App extends Component {
   }
 
   showRoomModal(room){
-    console.log("Room ",room);
+    console.log(room);
+    this.state.modalIsOpen = true
+    this.setState({modalRoom: room})
+  }
+
+  closeModal(props){
+    this.state.modalIsOpen = false
+    this.setState({modalRoom: []})
   }
 
   cardsScheme() {
@@ -137,21 +165,25 @@ class App extends Component {
     if (rooms) {
       var listRooms = rooms.map(function(room, key) {
         return (
-          <div key={key} className="Room-Card">
-            <div className="Room-Images">
-              <img src={room.hotel_thumbnail}/>
-              <br/>
-              <img src={room.room_thumbnail}/>
+          <div>
+            <div key={key} className="Room-Card">
+              <div className="Room-Images">
+                <img src={room.hotel_thumbnail}/>
+                <br/>
+                <img src={room.room_thumbnail}/>
+              </div>
+              <label className="hotel_name">{room.hotel_name}</label>
+              <label className="capacity">{room.capacity}</label>
+              <label className="beds">
+                <span className="beds-single">{room.beds.simple}</span>
+                <span className="beds-double">{room.beds.double}</span>
+              </label>
+              <label className="check_in">Check in: {room.check_in}</label>
+              <label className="check_out">Check out: {room.check_out}</label>
+              <label className="room_type">{room.room_type=='L'?'Lujosa':'Sencilla'}</label>
+              <label className="currency">{numeral(room.price).format('0,0')} {room.currency}</label>
+              <button className="btn" onClick={self.showRoomModal.bind(self, room)}>Reservar</button>
             </div>
-            <label>{room.hotel_name}</label> <br/>
-            <label>{room.capacity} personas</label> <br/>
-            <label>{room.beds.double} camas dobles {room.beds.simple} camas sencillas</label> <br/>
-            <label>Check in: {room.check_in}</label> <br/>
-            <label>Check out: {room.check_out}</label> <br/>
-            <label>Descripción: {room.description}</label> <br/>
-            <label>Tipo de habitación: {room.room_type}</label> <br/>
-            <label>{room.price} {room.currency}</label> <br/>
-            <button onClick={self.showRoomModal.bind(self, room)}>Reservar</button>
           </div>
         )
       })
@@ -185,8 +217,7 @@ class App extends Component {
         </header>
         <div className="App-body">
           <div className="search-form">
-            <div>
-            <label>Fecha</label>
+            <div className="input-field">
               <DateRangePicker
                 endDatePlaceholderText="Salida"
                 startDatePlaceholderText="Entrada"
@@ -198,26 +229,26 @@ class App extends Component {
                 onFocusChange={focusedInput => this.setState({ focusedInput })} // PropTypes.func.isRequired,
               />
             </div>
-            <br/>
-            <div>
+
+            <div className="input-field">
               <label>Lugar </label>
               <Select
                 className="select-react-custom"
                 name="city-name"
                 defaultValue="05001"
                 options={cityOptions}
-                placeholder = "Seleccione la ciudad"
+                placeholder = "-- Seleccione --"
                 value={this.state.place}
                 onChange={this.cityChange}>
               </Select>
             </div>
-            <br/>
-            <div>
+
+            <div className="input-field">
               <label># personas </label>
               <input className="amount-ppl-input" type="number" min="0" step="1" max="30" value={this.state.amountPpl} onChange={this.amountPplChange}></input>
             </div>
-            <br/>
-            <div>
+
+            <div className="input-field">
               <label>Tipo </label>
               <Select
                 name="room-type"
@@ -230,12 +261,15 @@ class App extends Component {
               </Select>
             </div>
             <br/>
-            <button onClick={this.getRooms}>Buscar</button>
+            <button className="btn" onClick={this.getRooms}>Buscar</button>
 
-            <br/>
-            <label>{this.state.fieldsErrorMessage}</label>
+            <div className="input-field fieldsErrorMessage">
+              <label className="fieldsErrorMessage">{this.state.fieldsErrorMessage}</label>
+            </div>
           </div>
-          {this.cardsScheme()}
+          <div className="Rooms-Cards">
+            {this.cardsScheme()}
+          </div>
         </div>
         <div className="App-footer">
           <div className="footer-text">
@@ -255,6 +289,28 @@ class App extends Component {
             </tbody>
           </table>
         </div>
+        <Modal
+          isOpen={this.state.modalIsOpen}
+          onRequestClose={this.closeModal}
+          style={customStyles}
+          contentLabel="Example Modal">
+          <div className="Room-Card" id="Modal-Room">
+            <div className="Modal-Images">
+              <img src={this.state.modalRoom.hotel_thumbnail}/>
+              <br/>
+              <img src={this.state.modalRoom.room_thumbnail}/>
+            </div>
+            <label className="hotel_name">{this.state.modalRoom.hotel_name}</label>
+            <label className="capacity">{this.state.modalRoom.capacity}</label>
+            <label className="check_in">Check in: {this.state.modalRoom.check_in}</label>
+            <label className="check_out">Check out: {this.state.modalRoom.check_out}</label>
+            <label className="room_type">{this.state.modalRoom.room_type=='L'?'si':'no'}</label>
+            <label className="currency">{numeral(this.state.modalRoom.price).format('0,0')} {this.state.modalRoom.currency}</label>
+            <label className="description">{this.state.modalRoom.description}</label>
+            <button onClick={this.closeModal}>close</button>
+          </div>
+
+        </Modal>
       </div>
     );
   }
