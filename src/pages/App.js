@@ -9,6 +9,7 @@ import 'react-select/dist/react-select.css';
 import ApiHotelzFunctions from '../rest/apiHotelz'
 import moment from 'moment'
 import Select from 'react-select'
+import numeral from 'numeral'
 
 const apiHotelz = new ApiHotelzFunctions()
 
@@ -25,8 +26,8 @@ const cityOptions = [
   { value: "11001", label: "Bogotá" }
 ];
 const typeOptions = [
-  { value: 'L', label: "Lujosa" },
-  { value: 'S', label: "Sencilla" }
+  { value: 'S', label: "Sencilla" },
+  { value: 'L', label: "Lujosa" }
 ];
 
 class App extends Component {
@@ -58,7 +59,8 @@ class App extends Component {
   }
 
   cityChange(val) {
-    this.setState({place: val.value})
+    if (val)
+      this.setState({place: val.value})
   }
   typeChange(val) {
     this.setState({roomType: val.value})
@@ -149,21 +151,26 @@ class App extends Component {
     if (rooms) {
       var listRooms = rooms.map(function(room, key) {
         return (
+          <div>
           <div key={key} className="Room-Card">
             <div className="Room-Images">
               <img src={room.hotel_thumbnail}/>
               <br/>
               <img src={room.room_thumbnail}/>
             </div>
-            <label>{room.hotel_name}</label> <br/>
-            <label>{room.capacity} personas</label> <br/>
-            <label>{room.beds.double} camas dobles {room.beds.simple} camas sencillas</label> <br/>
-            <label>Check in: {room.check_in}</label> <br/>
-            <label>Check out: {room.check_out}</label> <br/>
-            <label>Descripción: {room.description}</label> <br/>
-            <label>Tipo de habitación: {room.room_type}</label> <br/>
-            <label>{room.price} {room.currency}</label> <br/>
-            <button>Reservar</button>
+            <label className="hotel_name">{room.hotel_name}</label>
+            <label className="description">{room.description}</label>
+            <label className="capacity">{room.capacity}</label>
+            <label className="beds">
+              <span className="beds-single">{room.beds.simple}</span>
+              <span className="beds-double">{room.beds.double}</span>
+            </label>
+            <label className="check_in">Check in: {room.check_in}</label>
+            <label className="check_out">Check out: {room.check_out}</label>
+            <label className="room_type">{room.room_type=='L'?'si':'no'}</label>
+            <label className="currency">{numeral(room.price).format('0,0')} {room.currency}</label>
+            <button className="btn">Reservar</button>
+          </div>
           </div>
         )
       })
@@ -197,8 +204,7 @@ class App extends Component {
         </header>
         <div className="App-body">
           <div className="search-form">
-            <div>
-            <label>Fecha</label>
+            <div className="input-field">
               <DateRangePicker
                 endDatePlaceholderText="Salida"
                 startDatePlaceholderText="Entrada"
@@ -210,26 +216,26 @@ class App extends Component {
                 onFocusChange={focusedInput => this.setState({ focusedInput })} // PropTypes.func.isRequired,
               />
             </div>
-            <br/>
-            <div>
+
+            <div className="input-field">
               <label>Lugar </label>
               <Select
                 className="select-react-custom"
                 name="city-name"
                 defaultValue="05001"
                 options={cityOptions}
-                placeholder = "Seleccione la ciudad"
+                placeholder = "-- Seleccione --"
                 value={this.state.place}
                 onChange={this.cityChange}>
               </Select>
             </div>
-            <br/>
-            <div>
+
+            <div className="input-field">
               <label># personas </label>
               <input className="amount-ppl-input" type="number" min="0" step="1" max="30" value={this.state.amountPpl} onChange={this.amountPplChange}></input>
             </div>
-            <br/>
-            <div>
+
+            <div className="input-field">
               <label>Tipo </label>
               <Select
                 name="room-type"
@@ -242,10 +248,11 @@ class App extends Component {
               </Select>
             </div>
             <br/>
-            <button onClick={this.getRooms}>Buscar</button>
+            <button className="btn" onClick={this.getRooms}>Buscar</button>
 
-            <br/>
-            <label>{this.state.fieldsErrorMessage}</label>
+            <div className="input-field fieldsErrorMessage">
+              <label className="fieldsErrorMessage">{this.state.fieldsErrorMessage}</label>
+            </div>
           </div>
           {this.cardsScheme()}
         </div>
