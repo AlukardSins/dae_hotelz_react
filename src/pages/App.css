@@ -27,17 +27,22 @@
   padding: 20px;
 }
 
-.reservationForm
+.reservation-form
 {
-  float: right;
+  margin: auto;
+  width: 70%;
+  margin-top: 15px;
 }
 
-.reservationForm input
+.reservation-form input
 {
-  width: 100px;
+  width: 100%;
   border: 1px solid #ccc;
 }
-
+.modal-data-table {
+  width: 100%;
+  display: table;
+}
 .App-header-btns {
   float: right;
   margin-right: 40px;
@@ -202,6 +207,7 @@
 .Rooms-Cards {
   display: flex;
   margin-bottom: 50px;
+  margin-top: 20px;
 }
 
 .Rooms-Cards .Room-Card-Wrapper {
@@ -215,7 +221,7 @@
   background: white;
   margin-top: 10px;
 
-  width: 300px;
+  width: 280px;
   padding: 10px;
   border-radius: 4px;
   text-align: right;
@@ -244,12 +250,12 @@
     display: block;
     margin: 4px 0;
   }
-  .Room-Card label:not(.hotel_name):not(.currency):not(.beds):not(.description):after,
-  .Room-Card .beds span:after
+  .Room-Card label:not(.hotel_name):not(.currency):not(.beds):not(.description):before,
+  .Room-Card .beds span:before
   {
     content: '';
     display: inline-block;
-    margin-left: 5px;
+    margin-right: 5px;
     width: 24px;
     height: 24px;
     top: 0;
@@ -258,27 +264,27 @@
     background-size: contain;
     vertical-align: middle;
   }
-  .Room-Card .capacity:after
+  .Room-Card .capacity:before
   {
     background-image: url('../images/icons/capacity.png');
   }
-  .Room-Card .check_in:after
+  .Room-Card .check_in:before
   {
     background-image: url('../images/icons/checkin.png');
   }
-  .Room-Card .check_out:after
+  .Room-Card .check_out:before
   {
     background-image: url('../images/icons/checkout.png');
   }
-  .Room-Card .room_type:after
+  .Room-Card .room_type:before
   {
     background-image: url('../images/icons/diamond.png');
   }
-  .Room-Card .beds-single:after
+  .Room-Card .beds-single:before
   {
     background-image: url('../images/icons/single.png');
   }
-  .Room-Card .beds-double:after
+  .Room-Card .beds-double:before
   {
     background-image: url('../images/icons/double.png');
   }
@@ -300,25 +306,34 @@
 
 #Modal-Room {
   width: 95%;
+  text-align: left;
 }
 .Modal-Images img {
-  height: 120px;
-  width: 120px;
+  height: auto;
+  width: auto;
+  text-align: center;
+  max-width: 200px;
+  max-height: 200px;
 }
 
 .Modal-Images {
+  text-align: center;
   margin-right: 10px;
-  float: left;
+  float: right;
 }
 
 .Room-Images {
-  margin-right: 10px;
-  float: left;
+  text-align: center;
+  height: 125px;
 }
 
 .Room-Images img {
-  height: 90px;
-  width: 90px;
+  height: auto;
+  border-radius: 5px;
+  width: auto;
+  margin: 10px;
+  max-height: 120px;
+  max-width: 120px;
 }
 
 .input-field.fieldsErrorMessage

@@ -235,24 +235,15 @@ class App extends Component {
     if (rooms) {
       var listRooms = rooms.map(function(room, key) {
         return (
-          <div className="Room-Card-Wrapper">
+          <div className="Room-Card-Wrapper" onClick={self.showRoomModal.bind(self, room)}>
             <div key={key} className="Room-Card">
               <div className="Room-Images">
-                <img src={room.hotel_thumbnail}/>
-                <br/>
                 <img src={room.room_thumbnail}/>
+                <img src={room.hotel_thumbnail}/>
               </div>
+              <br/>
               <label className="hotel_name">{room.hotel_name}</label>
-              <label className="capacity">{room.capacity}</label>
-              <label className="beds">
-                <span className="beds-single">{room.beds.simple}</span>
-                <span className="beds-double">{room.beds.double}</span>
-              </label>
-              <label className="check_in">Check in: {room.check_in}</label>
-              <label className="check_out">Check out: {room.check_out}</label>
-              <label className="room_type">{room.room_type=='L'?'Lujosa':'Sencilla'}</label>
               <label className="currency">{numeral(room.price).format('0,0')} {room.currency}</label>
-              <button className="btn" onClick={self.showRoomModal.bind(self, room)}>Reservar</button>
             </div>
           </div>
         )
@@ -363,7 +354,8 @@ class App extends Component {
           isOpen={this.state.modalIsOpen}
           onRequestClose={this.closeModal}
           style={customStyles}
-          contentLabel="Modal reservation">
+          contentLabel="Modal reservation"
+          >
           <div className="Room-Card" id="Modal-Room">
             <div className="Modal-Images">
               <img src={this.state.modalRoom.hotel_thumbnail}/>
@@ -380,28 +372,33 @@ class App extends Component {
             <label className="currency">{numeral(this.state.modalRoom.price).format('0,0')} {this.state.modalRoom.currency}</label>
             <label className="description">{this.state.modalRoom.description}</label>
             <div className="modal_user_data">
-              <table className="reservationForm">
-                <tr>
-                  <td><label className="user_doctype">Tipo de documento: </label></td>
-                  <td><input onChange={this.userDocTypeChange}/></td>
-                </tr>
-                <tr>
-                  <td><label className="user_document">Documento: </label></td>
-                  <td><input onChange={this.userDocumentChange}/></td>
-                </tr>
-                <tr>
-                  <td><label className="user_email">Email: </label></td>
-                  <td><input onChange={this.userEmailChange}/></td>
-                </tr>
-                <tr>
-                  <td><label className="user_phone">Teléfono: </label></td>
-                  <td><input onChange={this.userPhoneChange}/></td>
-                </tr>
-              </table>
+              <div className="modal-data-table">
+                <table className="reservation-form">
+                  <tr>
+                    <td><label className="user_doctype">Tipo de documento: </label></td>
+                    <td><input onChange={this.userDocTypeChange}/></td>
+                    <td><label className="user_document">Documento: </label></td>
+                    <td><input onChange={this.userDocumentChange}/></td>
+                  </tr>
+                  <tr>
+                    <td><label className="user_email">Email: </label></td>
+                    <td><input onChange={this.userEmailChange}/></td>
+                    <td><label className="user_phone">Teléfono: </label></td>
+                    <td><input onChange={this.userPhoneChange}/></td>
+                  </tr>
+                  <tr>
+                  <td/>
+                    <td>
+                      <button className="btn" onClick={this.closeModal}>Cancelar</button>
+                    </td>
+                    <td>
+                      <button className="btn" onClick={this.reservateRoom}>Reservar</button>
+                    </td>
+                    <td/>
+                  </tr>
+                </table>
+              </div>
               <div className="clear"></div>
-              <button className="btn" onClick={this.closeModal}>Cancelar</button>
-              &nbsp;
-              <button className="btn" onClick={this.reservateRoom}>Reservar</button>
             </div>
           </div>
         </Modal>
