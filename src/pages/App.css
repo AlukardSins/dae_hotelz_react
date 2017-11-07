@@ -150,6 +150,11 @@
   float: right;
 }
 
+.select-react-custom-modal {
+  width: 100%;
+  float: right;
+}
+
 .amount-ppl-input {
   padding: 5px 0;
   width: 20%;

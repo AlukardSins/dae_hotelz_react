@@ -29,6 +29,12 @@ const typeOptions = [
   { value: 'S', label: "Sencilla" },
   { value: 'L', label: "Lujosa" }
 ];
+const docTypeOptions = [
+  { value: 'Cédula de ciudadanía', label: "C.C." },
+  { value: 'Cédula de extranjería', label: "C.E." },
+  { value: 'NIT', label: "NIT" },
+  { value: 'Pasaporte', label: "Pasaporte" }
+];
 
 const customStyles = {
   content : {
@@ -96,7 +102,7 @@ class App extends Component {
 
   userDocTypeChange(val) {
     var resData = this.state.userReservationData
-    resData.doc_type = val.target.value
+    resData.doc_type = val.value
     this.setState({userReservationData: resData})
   }
 
@@ -200,6 +206,7 @@ class App extends Component {
       }
     })
   }
+
   processRoomsData(props){
     if (this.state.roomsUnprocessedData) {
       this.state.roomsUnprocessedData.forEach(hotel => {
@@ -227,7 +234,6 @@ class App extends Component {
     this.setState({modalIsOpen : false})
     this.setState({modalRoom: []})
   }
-
 
   cardsScheme() {
     var rooms = this.state.roomsData
@@ -271,9 +277,9 @@ class App extends Component {
             </div>
           </div>
           <div className="App-header-btns">
-            <button>Hotels</button>
-            <button>Cities</button>
-            <button>Profile</button>
+            <button>Hoteles</button>
+            <button>Ciudades</button>
+            <button>Perfil</button>
           </div>
         </header>
         <div className="App-body">
@@ -365,18 +371,29 @@ class App extends Component {
             <label className="hotel_name" tooltip={this.state.modalRoom.hotel_name}>
               {this.state.modalRoom.hotel_name}
             </label>
-            <label className="capacity">{this.state.modalRoom.capacity}</label>
+            <label className="capacity">Capacidad: {this.state.modalRoom.capacity} persona(s)</label>
             <label className="check_in">Check in: {this.state.modalRoom.check_in}</label>
             <label className="check_out">Check out: {this.state.modalRoom.check_out}</label>
-            <label className="room_type">{this.state.modalRoom.room_type=='L'?'Lujosa':'Sencilla'}</label>
+            <label className="room_type">Tipo de habitación: {this.state.modalRoom.room_type=='L'?'Lujosa':'Sencilla'}</label>
             <label className="currency">{numeral(this.state.modalRoom.price).format('0,0')} {this.state.modalRoom.currency}</label>
-            <label className="description">{this.state.modalRoom.description}</label>
+            <label className="description">Descripción: {this.state.modalRoom.description}</label>
             <div className="modal_user_data">
               <div className="modal-data-table">
                 <table className="reservation-form">
                   <tr>
                     <td><label className="user_doctype">Tipo de documento: </label></td>
-                    <td><input onChange={this.userDocTypeChange}/></td>
+
+                    <td><div className="input-field">
+                      <Select
+                        name="document-type"
+                        className="select-react-custom-modal"
+                        defaultValue="C.C."
+                        options={docTypeOptions}
+                        clearable={this.state.clearable}
+                        value={this.state.userReservationData.doc_type}
+                        onChange={this.userDocTypeChange}>
+                      </Select>
+                    </div></td>
                     <td><label className="user_document">Documento: </label></td>
                     <td><input onChange={this.userDocumentChange}/></td>
                   </tr>
