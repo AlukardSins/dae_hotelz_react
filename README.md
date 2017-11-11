@@ -6,4 +6,5 @@
 @alukardsins
 @bonampa312
 
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://dae-hotelz-react-dev.herokuapp.com/)
+[![Development](https://www.herokucdn.com/deploy/button.png)](https://dae-hotelz-react-dev.herokuapp.com/)
+[![Production](https://www.herokucdn.com/deploy/button.png)](https://dae-hotelz-react.herokuapp.com/)
