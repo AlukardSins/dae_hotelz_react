@@ -18,8 +18,7 @@ const endpoints = {
   pythonEndpoint : "https://hotelz-python-api.herokuapp.com/V1/",
   goEndpoint     : "https://udeain.herokuapp.com/api/v1/",
   nodeEndpoint   : "https://api-hotelz-node.herokuapp.com/v1/",
-  scalaEndpoint  : "https://dezameron-api-dae.herokuapp.com/v1/",
-  testMLURL      : "https://api.mercadolibre.com/sites/MCO/"
+  scalaEndpoint  : "https://dezameron-api-dae.herokuapp.com/v1/"
 }
 
 const cityOptions = [
@@ -29,6 +28,12 @@ const cityOptions = [
 const typeOptions = [
   { value: 'S', label: "Sencilla" },
   { value: 'L', label: "Lujosa" }
+];
+const docTypeOptions = [
+  { value: 'Cédula de ciudadanía', label: "C.C." },
+  { value: 'Cédula de extranjería', label: "C.E." },
+  { value: 'NIT', label: "NIT" },
+  { value: 'Pasaporte', label: "Pasaporte" }
 ];
 
 const customStyles = {
@@ -51,14 +56,16 @@ class App extends Component {
       startDate: '',
       endDate: '',
       place: '',
-      amountPpl: '0',
+      amountPpl: '1',
       roomType: 'L',
       roomsUnprocessedData: [''],
       roomsData: [],
       fieldsErrorMessage : '',
       clearable: false,
       modalRoom: [],
-      modalIsOpen: false
+      userReservationData: {},
+      modalIsOpen: false,
+      reservationMessage: ''
     }
     this.getRooms = this.getRooms.bind(this)
     this.processRoomsData = this.processRoomsData.bind(this)
@@ -67,6 +74,11 @@ class App extends Component {
     this.typeChange = this.typeChange.bind(this)
     this.amountPplChange = this.amountPplChange.bind(this)
     this.closeModal = this.closeModal.bind(this)
+    this.reservateRoom = this.reservateRoom.bind(this)
+    this.userDocTypeChange = this.userDocTypeChange.bind(this)
+    this.userDocumentChange = this.userDocumentChange.bind(this)
+    this.userEmailChange = this.userEmailChange.bind(this)
+    this.userPhoneChange = this.userPhoneChange.bind(this)
   }
 
   state = {
@@ -88,6 +100,30 @@ class App extends Component {
     this.setState({amountPpl: val.target.value})
   }
 
+  userDocTypeChange(val) {
+    var resData = this.state.userReservationData
+    resData.doc_type = val.value
+    this.setState({userReservationData: resData})
+  }
+
+  userDocumentChange(val) {
+    var resData = this.state.userReservationData
+    resData.doc_id = val.target.value
+    this.setState({userReservationData: resData})
+  }
+
+  userEmailChange(val) {
+    var resData = this.state.userReservationData
+    resData.email = val.target.value
+    this.setState({userReservationData: resData})
+  }
+
+  userPhoneChange(val) {
+    var resData = this.state.userReservationData
+    resData.phone_number = val.target.value
+    this.setState({userReservationData: resData})
+  }
+
   validData(props){
       this.setState({fieldsErrorMessage: ''})
     if (
@@ -101,6 +137,46 @@ class App extends Component {
       return false;
     }
     return true
+  }
+
+  reservateRoom(props){
+    var reservateData = this.state.modalRoom
+    reservateData.userData = this.state.userReservationData
+    this.setState({modalRoom: reservateData})
+    var postData = this.state.modalRoom
+    postData.arrive_date = moment(this.state.startDate).format("YYYY-MM-DD")
+    postData.leave_date = moment(this.state.endDate).format("YYYY-MM-DD")
+    var endpointRes
+    switch (this.state.modalRoom.hotel_name) {
+      case "udeain medellin":
+        endpointRes = endpoints.goEndpoint
+        break;
+      case "Dann Cartón":
+        endpointRes = endpoints.nodeEndpoint
+        break;
+      case "Dezameron":
+        endpointRes = endpoints.scalaEndpoint
+        break;
+      case "Colombia Resort Spring":
+        endpointRes = endpoints.pythonEndpoint
+        break;
+      default:
+
+    }
+    console.log(this.state.modalRoom);
+
+    var responseReservate = apiHotelz.reservateRoom(endpointRes, this.state.modalRoom)
+    var self = this
+    Promise.all([responseReservate])
+    .then(values => {
+      self.closeModal()
+      if (values) {
+        alert("La habitación fue reservada con el código: \n"+ values[0].data.reservation_id)
+      }
+    })
+    .catch(function(error){
+      alert("Ocurrió un error al reservar, intente nuevamente")
+    })
   }
 
   getRooms(props) {
@@ -137,6 +213,7 @@ class App extends Component {
         hotel.data.rooms.forEach(room => {
           var roomItem = []
           roomItem = room
+          roomItem.hotel_id = hotel.data.hotel_id
           roomItem.hotel_name = hotel.data.hotel_name
           roomItem.hotel_thumbnail = hotel.data.hotel_thumbnail
           roomItem.check_in = hotel.data.check_in
@@ -149,13 +226,12 @@ class App extends Component {
   }
 
   showRoomModal(room){
-    console.log(room);
-    this.state.modalIsOpen = true
+    this.setState({modalIsOpen : true})
     this.setState({modalRoom: room})
   }
 
   closeModal(props){
-    this.state.modalIsOpen = false
+    this.setState({modalIsOpen : false})
     this.setState({modalRoom: []})
   }
 
@@ -165,24 +241,15 @@ class App extends Component {
     if (rooms) {
       var listRooms = rooms.map(function(room, key) {
         return (
-          <div>
+          <div className="Room-Card-Wrapper" onClick={self.showRoomModal.bind(self, room)}>
             <div key={key} className="Room-Card">
               <div className="Room-Images">
-                <img src={room.hotel_thumbnail}/>
-                <br/>
                 <img src={room.room_thumbnail}/>
+                <img src={room.hotel_thumbnail}/>
               </div>
+              <br/>
               <label className="hotel_name">{room.hotel_name}</label>
-              <label className="capacity">{room.capacity}</label>
-              <label className="beds">
-                <span className="beds-single">{room.beds.simple}</span>
-                <span className="beds-double">{room.beds.double}</span>
-              </label>
-              <label className="check_in">Check in: {room.check_in}</label>
-              <label className="check_out">Check out: {room.check_out}</label>
-              <label className="room_type">{room.room_type=='L'?'Lujosa':'Sencilla'}</label>
               <label className="currency">{numeral(room.price).format('0,0')} {room.currency}</label>
-              <button className="btn" onClick={self.showRoomModal.bind(self, room)}>Reservar</button>
             </div>
           </div>
         )
@@ -210,9 +277,9 @@ class App extends Component {
             </div>
           </div>
           <div className="App-header-btns">
-            <button>Hotels</button>
-            <button>Cities</button>
-            <button>Profile</button>
+            <button>Hoteles</button>
+            <button>Ciudades</button>
+            <button>Perfil</button>
           </div>
         </header>
         <div className="App-body">
@@ -245,7 +312,7 @@ class App extends Component {
 
             <div className="input-field">
               <label># personas </label>
-              <input className="amount-ppl-input" type="number" min="0" step="1" max="30" value={this.state.amountPpl} onChange={this.amountPplChange}></input>
+              <input className="amount-ppl-input" type="number" min="1" step="1" max="30" value={this.state.amountPpl} onChange={this.amountPplChange}></input>
             </div>
 
             <div className="input-field">
@@ -293,23 +360,64 @@ class App extends Component {
           isOpen={this.state.modalIsOpen}
           onRequestClose={this.closeModal}
           style={customStyles}
-          contentLabel="Example Modal">
+          contentLabel="Modal reservation"
+          >
           <div className="Room-Card" id="Modal-Room">
             <div className="Modal-Images">
               <img src={this.state.modalRoom.hotel_thumbnail}/>
               <br/>
               <img src={this.state.modalRoom.room_thumbnail}/>
             </div>
-            <label className="hotel_name">{this.state.modalRoom.hotel_name}</label>
-            <label className="capacity">{this.state.modalRoom.capacity}</label>
+            <label className="hotel_name" tooltip={this.state.modalRoom.hotel_name}>
+              {this.state.modalRoom.hotel_name}
+            </label>
+            <label className="capacity">Capacidad: {this.state.modalRoom.capacity} persona(s)</label>
             <label className="check_in">Check in: {this.state.modalRoom.check_in}</label>
             <label className="check_out">Check out: {this.state.modalRoom.check_out}</label>
-            <label className="room_type">{this.state.modalRoom.room_type=='L'?'si':'no'}</label>
+            <label className="room_type">Tipo de habitación: {this.state.modalRoom.room_type=='L'?'Lujosa':'Sencilla'}</label>
             <label className="currency">{numeral(this.state.modalRoom.price).format('0,0')} {this.state.modalRoom.currency}</label>
-            <label className="description">{this.state.modalRoom.description}</label>
-            <button onClick={this.closeModal}>close</button>
-          </div>
+            <label className="description">Descripción: {this.state.modalRoom.description}</label>
+            <div className="modal_user_data">
+              <div className="modal-data-table">
+                <table className="reservation-form">
+                  <tr>
+                    <td><label className="user_doctype">Tipo de documento: </label></td>
 
+                    <td><div className="input-field">
+                      <Select
+                        name="document-type"
+                        className="select-react-custom-modal"
+                        defaultValue="C.C."
+                        options={docTypeOptions}
+                        clearable={this.state.clearable}
+                        value={this.state.userReservationData.doc_type}
+                        onChange={this.userDocTypeChange}>
+                      </Select>
+                    </div></td>
+                    <td><label className="user_document">Documento: </label></td>
+                    <td><input onChange={this.userDocumentChange}/></td>
+                  </tr>
+                  <tr>
+                    <td><label className="user_email">Email: </label></td>
+                    <td><input onChange={this.userEmailChange}/></td>
+                    <td><label className="user_phone">Teléfono: </label></td>
+                    <td><input onChange={this.userPhoneChange}/></td>
+                  </tr>
+                  <tr>
+                  <td/>
+                    <td>
+                      <button className="btn" onClick={this.closeModal}>Cancelar</button>
+                    </td>
+                    <td>
+                      <button className="btn" onClick={this.reservateRoom}>Reservar</button>
+                    </td>
+                    <td/>
+                  </tr>
+                </table>
+              </div>
+              <div className="clear"></div>
+            </div>
+          </div>
         </Modal>
       </div>
     );

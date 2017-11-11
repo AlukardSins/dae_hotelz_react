@@ -1,3 +1,6 @@
+.clear {
+  clear: both;
+}
 .App {
   text-align: center;
   height: 100%;
@@ -20,10 +23,26 @@
 
 .App-header {
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.65), transparent 70%,transparent 100%);
-  height: 100px;
+  height: 120px;
   padding: 20px;
 }
 
+.reservation-form
+{
+  margin: auto;
+  width: 70%;
+  margin-top: 15px;
+}
+
+.reservation-form input
+{
+  width: 100%;
+  border: 1px solid #ccc;
+}
+.modal-data-table {
+  width: 100%;
+  display: table;
+}
 .App-header-btns {
   float: right;
   margin-right: 40px;
@@ -131,6 +150,11 @@
   float: right;
 }
 
+.select-react-custom-modal {
+  width: 100%;
+  float: right;
+}
+
 .amount-ppl-input {
   padding: 5px 0;
   width: 20%;
@@ -186,27 +210,44 @@
 }
 
 .Rooms-Cards {
+  display: flex;
   margin-bottom: 50px;
+  margin-top: 20px;
 }
 
+.Rooms-Cards .Room-Card-Wrapper {
+  display: inline-block;
+  text-align: left;
+}
 .Room-Card {
   display: inline-block;
   /*height: 200px;*/
-  margin: auto;
+  margin: 5px 5px;
   background: white;
   margin-top: 10px;
 
-  width: 400px;
+  width: 280px;
   padding: 10px;
   border-radius: 4px;
   text-align: right;
+  transition: 0.2s all;
+}
+.Rooms-Cards .Room-Card:hover {
+  box-shadow: 0px 0px 10px #444;
+  transform: scale(1.05);
+}
+.Rooms-Cards .Room-Card{
   box-shadow: 4px 4px 10px;
 }
   .Room-Card .hotel_name
   {
+    display: block;
     font-size: 20px;
     font-weight: bold;
     text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .Room-Card label:not(.hotel_name)
   {
@@ -214,12 +255,12 @@
     display: block;
     margin: 4px 0;
   }
-  .Room-Card label:not(.hotel_name):not(.currency):not(.beds):not(.description):after,
-  .Room-Card .beds span:after
+  .Room-Card label:not(.hotel_name):not(.currency):not(.beds):not(.description):before,
+  .Room-Card .beds span:before
   {
     content: '';
     display: inline-block;
-    margin-left: 5px;
+    margin-right: 5px;
     width: 24px;
     height: 24px;
     top: 0;
@@ -228,27 +269,27 @@
     background-size: contain;
     vertical-align: middle;
   }
-  .Room-Card .capacity:after
+  .Room-Card .capacity:before
   {
     background-image: url('../images/icons/capacity.png');
   }
-  .Room-Card .check_in:after
+  .Room-Card .check_in:before
   {
     background-image: url('../images/icons/checkin.png');
   }
-  .Room-Card .check_out:after
+  .Room-Card .check_out:before
   {
     background-image: url('../images/icons/checkout.png');
   }
-  .Room-Card .room_type:after
+  .Room-Card .room_type:before
   {
     background-image: url('../images/icons/diamond.png');
   }
-  .Room-Card .beds-single:after
+  .Room-Card .beds-single:before
   {
     background-image: url('../images/icons/single.png');
   }
-  .Room-Card .beds-double:after
+  .Room-Card .beds-double:before
   {
     background-image: url('../images/icons/double.png');
   }
@@ -256,35 +297,48 @@
   {
     font-size: 24px;
   }
-    .Room-Card .currency:before
-    {
-      content: '$';
-    }
-    .Room-Card .currency:after
-    {
-      display: none;
-    }
+  .Room-Card .currency:before
+  {
+    content: '$';
+  }
+  .Room-Card .currency:after
+  {
+    display: none;
+  }
+
+
+
+
 #Modal-Room {
   width: 95%;
+  text-align: left;
 }
 .Modal-Images img {
-  height: 120px;
-  width: 120px;
+  height: auto;
+  width: auto;
+  text-align: center;
+  max-width: 200px;
+  max-height: 200px;
 }
 
 .Modal-Images {
+  text-align: center;
   margin-right: 10px;
-  float: left;
+  float: right;
 }
 
 .Room-Images {
-  margin-right: 10px;
-  float: left;
+  text-align: center;
+  height: 125px;
 }
 
 .Room-Images img {
-  height: 90px;
-  width: 90px;
+  height: auto;
+  border-radius: 5px;
+  width: auto;
+  margin: 10px;
+  max-height: 120px;
+  max-width: 120px;
 }
 
 .input-field.fieldsErrorMessage
