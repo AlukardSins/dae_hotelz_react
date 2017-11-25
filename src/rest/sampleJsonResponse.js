@@ -80,4 +80,5 @@ var SAMPLE_JSON_RESPONSE = {
     }
   ]
 };
+
 export default SAMPLE_JSON_RESPONSE;

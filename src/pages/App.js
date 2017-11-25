@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logoicon from '../images/appIcon.png';
 import logotext from '../images/hotelz_logo.png';
 import './App.css';
 import 'react-dates/initialize';
@@ -11,6 +10,9 @@ import moment from 'moment'
 import Select from 'react-select'
 import numeral from 'numeral'
 import Modal from 'react-modal'
+
+// import Auth from './Auth';
+import Header from './Header';
 
 const apiHotelz = new ApiHotelzFunctions()
 
@@ -268,20 +270,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logoicon} className="App-logo" alt="logo" />
-          <div className="App-title">
-            <div id="divTitle">
-              <a1>Hotelz</a1>
-              <a2>.com</a2>
-            </div>
-          </div>
-          <div className="App-header-btns">
-            <button>Hoteles</button>
-            <button>Ciudades</button>
-            <button>Perfil</button>
-          </div>
-        </header>
+        <Header />
         <div className="App-body">
           <div className="search-form">
             <div className="input-field">

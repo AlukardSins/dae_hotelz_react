@@ -51,7 +51,7 @@
 .App-header-btns button {
   font-size: 1.1em;
   margin: 10px;
-  width: 90px;
+  /*width: 90px;*/
   height: 30px;
   background-color: rgba(20, 20, 20, 0.2);
   color: white;
