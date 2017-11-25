@@ -352,3 +352,21 @@
   float: none !important;
   width: auto !important;
 }
+.ReactModalPortal .overflow
+{
+  /*overflow: auto;*/
+}
+.ReactModalPortal .Room-Card-Wrapper .Room-Card
+{
+  width: 90%;
+}
+.ReactModalPortal .Room-Card-Wrapper .Room-Images
+{
+  float: left;
+}
+.ReactModalPortal .Room-Card-Wrapper
+{
+  border-radius: 4px;
+  box-shadow: 0 0 4px #000;
+  margin: 20px 15px;
+}

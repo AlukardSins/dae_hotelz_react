@@ -34,7 +34,9 @@ const customStyles = {
 		bottom      : 'auto',
 		marginRight : '-50%',
 		width       : '50%',
-		transform   : 'translate(-50%, -50%)'
+		transform   : 'translate(-50%, -50%)',
+		overflow		: 'auto',
+		maxHeight	: '400px'
 	}
 };
 class LoginHeader extends Component {
@@ -56,14 +58,35 @@ class LoginHeader extends Component {
 		this.setState({
 			reservations: [
 				{
-					"hotel_name": "Sede Bogotá",
+					"hotel_name": "Dezameron",
 					"reservation": [
 						{
 							"state": "A",
+							"reserve_id": "00001",
+							"arrive_date": "10-12-2017",
+							"leave_date": "11-12-2017",
 							"room": {
 								"room_type": "lujosa",
 								"capacity": 3,
-								"price": "$53,908",
+								"price": "$483,908",
+								"currency": "COP",
+								"room_thumbnail": "http://www.hotelarielsoaxtepec.com/hotel3.jpg",
+								"description": "Officia consectetur deserunt laborum elit velit velit excepteur laboris pariatur labore labore nisi ipsum. Et esse eiusmod nulla ad elit et fugiat nostrud aute ut. Officia ullamco et Lorem pariatur laboris. Elit non id laboris aliquip proident reprehenderit veniam in cupidatat aute in sunt eu. Consectetur anim qui aliquip consequat. Consequat veniam ipsum Lorem consectetur ad enim pariatur magna magna excepteur fugiat officia exercitation veniam. Esse sit irure cillum sunt consequat ipsum dolor ex magna occaecat aute non occaecat culpa.\r\n",
+								"beds": {
+									"simple": 2,
+									"double": 2
+								}
+							}
+						},
+						{
+							"state": "B",
+							"reserve_id": "00002",
+							"arrive_date": "20-01-2018",
+							"leave_date": "25-02-2018",
+							"room": {
+								"room_type": "lujosa",
+								"capacity": 3,
+								"price": "$53,909",
 								"currency": "COP",
 								"room_thumbnail": "http://www.hotelarielsoaxtepec.com/hotel3.jpg",
 								"description": "Officia consectetur deserunt laborum elit velit velit excepteur laboris pariatur labore labore nisi ipsum. Et esse eiusmod nulla ad elit et fugiat nostrud aute ut. Officia ullamco et Lorem pariatur laboris. Elit non id laboris aliquip proident reprehenderit veniam in cupidatat aute in sunt eu. Consectetur anim qui aliquip consequat. Consequat veniam ipsum Lorem consectetur ad enim pariatur magna magna excepteur fugiat officia exercitation veniam. Esse sit irure cillum sunt consequat ipsum dolor ex magna occaecat aute non occaecat culpa.\r\n",
@@ -73,14 +96,38 @@ class LoginHeader extends Component {
 								}
 							}
 						}
-					],
+					]
+				},
+				{
+					"hotel_name": "UdeA-IN",
 					"reservation": [
 						{
-							"state": "B",
+							"state": "C",
+							"reserve_id": "00001",
+							"arrive_date": "10-12-2017",
+							"leave_date": "11-12-2017",
 							"room": {
 								"room_type": "lujosa",
 								"capacity": 3,
-								"price": "$53,908",
+								"price": "$483,908",
+								"currency": "COP",
+								"room_thumbnail": "http://www.hotelarielsoaxtepec.com/hotel3.jpg",
+								"description": "Officia consectetur deserunt laborum elit velit velit excepteur laboris pariatur labore labore nisi ipsum. Et esse eiusmod nulla ad elit et fugiat nostrud aute ut. Officia ullamco et Lorem pariatur laboris. Elit non id laboris aliquip proident reprehenderit veniam in cupidatat aute in sunt eu. Consectetur anim qui aliquip consequat. Consequat veniam ipsum Lorem consectetur ad enim pariatur magna magna excepteur fugiat officia exercitation veniam. Esse sit irure cillum sunt consequat ipsum dolor ex magna occaecat aute non occaecat culpa.\r\n",
+								"beds": {
+									"simple": 2,
+									"double": 2
+								}
+							}
+						},
+						{
+							"state": "B",
+							"reserve_id": "00002",
+							"arrive_date": "20-01-2018",
+							"leave_date": "25-02-2018",
+							"room": {
+								"room_type": "lujosa",
+								"capacity": 3,
+								"price": "$53,909",
 								"currency": "COP",
 								"room_thumbnail": "http://www.hotelarielsoaxtepec.com/hotel3.jpg",
 								"description": "Officia consectetur deserunt laborum elit velit velit excepteur laboris pariatur labore labore nisi ipsum. Et esse eiusmod nulla ad elit et fugiat nostrud aute ut. Officia ullamco et Lorem pariatur laboris. Elit non id laboris aliquip proident reprehenderit veniam in cupidatat aute in sunt eu. Consectetur anim qui aliquip consequat. Consequat veniam ipsum Lorem consectetur ad enim pariatur magna magna excepteur fugiat officia exercitation veniam. Esse sit irure cillum sunt consequat ipsum dolor ex magna occaecat aute non occaecat culpa.\r\n",
@@ -125,7 +172,7 @@ class LoginHeader extends Component {
 
 	listReserves() {
 		let self = this
-		
+
 		let promiseGo = apiHotelz.getReserves(apiHotelz.endpoints.dev.goEndpoint, this.state.token)
 		let promisePython = apiHotelz.getReserves(apiHotelz.endpoints.dev.pythonEndpoint, this.state.token)
 		let promiseNode = apiHotelz.getReserves(apiHotelz.endpoints.dev.nodeEndpoint, this.state.token)
@@ -167,14 +214,14 @@ class LoginHeader extends Component {
 		console.log(this.state.reservations)
 
 		if (this.state.user != null)
-			sesionButton = 
+			sesionButton =
 				<div>
 					Bienvenido, {this.state.user.displayName}
 					<button onClick={this.listReserves.bind(this)}>Listar Reservas</button>
 					<button onClick={this.logout.bind(this)}>Salir</button>
 				</div>
 		else
-			sesionButton = 
+			sesionButton =
 			<div>
 				<button onClick={this.login.bind(this)}>Iniciar Sesión</button>
 				<button onClick={this.showRoomModal.bind(this)}>Modal</button>
@@ -191,26 +238,31 @@ class LoginHeader extends Component {
 					style={customStyles}
 					contentLabel="Modal reservation"
 					>
+						<div className="overflow">
 						{this.state.reservations.map(function(reservation, key){
 							return (
-								reservation.reservation.map(function(data, key){
-									return (
-										<div className="Room-Card-Wrapper">
-											<div key={key} className="Room-Card">
-												<div className="Room-Images">
-													<img src={data.room.room_thumbnail}/>
-													<img src={data.room.hotel_thumbnail}/>
+									reservation.reservation.map(function(data, key2){
+										return (
+											<div className="Room-Card-Wrapper">
+												<div key={key2} className="Room-Card">
+													<div className="Room-Images">
+														<img src={data.room.room_thumbnail}/>
+														<img src={data.room.hotel_thumbnail}/>
+													</div>
+													<br/>
+													<label className="hotel_name">{reservation.hotel_name}</label>
+													<label className="">{self.getActiveText(data.state)}</label>
+													<label className="">{data.reserve_id}</label>
+													<label className="">{data.arrive_date}</label>
+													<label className="">{data.leave_date}</label>
+													<label className="currency">{numeral(data.room.price).format('0,0')} {data.room.currency}</label>
 												</div>
-												<br/>
-												<label className="hotel_name">{reservation.hotel_name}</label>
-												<label className="">{self.getActiveText(data.state)}</label>
-												<label className="currency">{numeral(data.room.price).format('0,0')} {data.room.currency}</label>
 											</div>
-										</div>
-									)
-								})
+										)
+									})
 							)
 						})}
+						</div>
 				</Modal>
 			</div>
 		)
